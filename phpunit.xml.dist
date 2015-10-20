@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<phpunit
+        bootstrap="./test/phpunit/Bootstrap.php"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        verbose="true"
+        stopOnFailure="false"
+        processIsolation="false"
+        backupGlobals="false"
+        syntaxCheck="true"
+        >
+    <testsuites>
+        <testsuite name="Workflow Doctrine">
+            <directory>./test/phpunit</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>./src</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-php" target="./.reports/coverage/coverage-phpunit.cov"/>
+    </logging>
+</phpunit>

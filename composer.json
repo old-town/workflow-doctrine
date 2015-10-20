@@ -1,0 +1,53 @@
+{
+  "name": "old-town/workflow-doctrine",
+  "description": "Workflow Doctrine Module",
+  "type": "library",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "workflow",
+    "doctrine",
+    "library"
+  ],
+  "minimum-stability": "dev",
+  "homepage": "https://github.com/old-town/workflow-doctrine",
+  "support": {
+    "email": "and-rey2@yandex.ru"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/old-town/workflow-doctrine"
+    }
+  ],
+  "require": {
+    "php": ">=5.5",
+    "old-town/workflow": "dev-dev"
+
+  },
+  "require-dev": {
+    "ext-mbstring": "*",
+    "fabpot/php-cs-fixer": "1.9.1",
+    "phpunit/phpunit": "4.7.7",
+    "phpunit/phpcov": "2.0.1",
+    "zendframework/zend-loader": "~2.4.0",
+    "satooshi/php-coveralls": "dev-master",
+    "behat/behat": "~3.0",
+    "vipsoft/code-coverage-extension": "~3@dev",
+    "ramsey/uuid" : "~3.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "OldTown\\Workflow\\Spi\\Doctrine\\": "src/"
+
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "OldTown\\Workflow\\Spi\\Doctrine\\PhpUnit\\Test\\": "test/phpunit/tests"
+    },
+    "classmap": [
+      "./test/phpunit/Bootstrap.php",
+      "./test/phpunit/Paths.php"
+    ]
+  }
+}
