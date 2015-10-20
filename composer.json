@@ -16,7 +16,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/old-town/workflow-doctrine"
+      "url": "https://github.com/old-town/old-town-workflow"
     }
   ],
   "require": {
