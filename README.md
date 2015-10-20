@@ -1,7 +1,7 @@
 # Workflow
 
-[![Build Status](https://secure.travis-ci.org/old-town/old-town-workflow.svg?branch=dev)](https://secure.travis-ci.org/old-town/old-town-workflow)
-[![Coverage Status](https://coveralls.io/repos/old-town/old-town-workflow/badge.svg?branch=dev&service=github)](https://coveralls.io/github/old-town/old-town-workflow?branch=dev)
+[![Build Status](https://secure.travis-ci.org/old-town/workflow-doctrine.svg?branch=dev)](https://secure.travis-ci.org/old-town/workflow-doctrine)
+[![Coverage Status](https://coveralls.io/repos/old-town/workflow-doctrine/badge.svg?branch=dev&service=github)](https://coveralls.io/github/old-town/workflow-doctrine?branch=dev)
 
 Сохранение состояния workflow в doctrine
 
