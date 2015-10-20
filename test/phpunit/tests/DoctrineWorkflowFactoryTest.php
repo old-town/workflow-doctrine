@@ -21,5 +21,4 @@ class DoctrineWorkflowFactoryTest extends TestCase
     {
         static::assertTrue(true);
     }
-
 }

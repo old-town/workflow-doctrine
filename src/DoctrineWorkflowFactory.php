@@ -14,5 +14,4 @@ use OldTown\Workflow\Loader\AbstractWorkflowFactory;
  */
 abstract class DoctrineWorkflowFactory extends AbstractWorkflowFactory
 {
-
 }
