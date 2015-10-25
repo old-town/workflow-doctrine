@@ -16,6 +16,7 @@
             <directory>./test/phpunit</directory>
         </testsuite>
     </testsuites>
+
     <filter>
         <whitelist>
             <directory>./src</directory>
@@ -24,4 +25,19 @@
     <logging>
         <log type="coverage-php" target="./.reports/coverage/coverage-phpunit.cov"/>
     </logging>
+
+
+
+    <listeners>
+        <listener class="\OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils\RabbitMqTestListener" file="./test/phpunit/utils/EntityManagerListener.php">
+            <arguments>
+                <array>
+                    <!-- Имя хоста либо ip, сервера с RabbitMq используемого для проведения тестов-->
+                    <element key="host">
+                        <string>localhost</string>
+                    </element>
+                </array>
+            </arguments>
+        </listener>
+    </listeners>
 </phpunit>

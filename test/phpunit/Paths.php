@@ -27,6 +27,53 @@ class Paths
     protected static $pathToTestDataDir;
 
     /**
+     * Путь до директории где храняться конфиги с метаданными сущностей
+     *
+     * @var string
+     */
+    protected static $pathToDoctrineMetadata;
+
+    /**
+     * Путь до директории где создаются прокси классы для тестов
+     *
+     * @var string
+     */
+    protected static $pathToTestDoctrineProxies;
+
+
+    /**
+     * Возвращает путь до директории где создаются прокси классы для тестов
+     *
+     * @return string
+     */
+    public static function getPathToTestDoctrineProxies()
+    {
+        if (static::$pathToTestDoctrineProxies) {
+            return static::$pathToTestDoctrineProxies;
+        }
+
+        static::$pathToTestDoctrineProxies = __DIR__ . '/../../data/test/Proxies';
+
+        return static::$pathToTestDoctrineProxies;
+    }
+
+    /**
+     * Возвращает путь до директории с данными для тестов
+     *
+     * @return string
+     */
+    public static function getPathToDoctrineMetadata()
+    {
+        if (static::$pathToDoctrineMetadata) {
+            return static::$pathToDoctrineMetadata;
+        }
+
+        static::$pathToDoctrineMetadata = __DIR__ . '/../../src';
+
+        return static::$pathToDoctrineMetadata;
+    }
+
+    /**
      * Возвращает путь до директории с данными для тестов
      *
      * @return string
