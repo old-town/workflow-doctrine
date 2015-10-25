@@ -19,6 +19,6 @@ class DoctrineWorkflowFactoryTest extends TestCase
 
     public function testFactory()
     {
-        static::assertTrue(true);
+
     }
 }
