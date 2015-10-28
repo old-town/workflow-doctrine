@@ -6,6 +6,7 @@
 namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils;
 
 
+
 use OldTown\Workflow\Spi\Doctrine\PhpUnit\Test\Paths;
 use PHPUnit_Framework_TestListener;
 use PHPUnit_Framework_Test;
@@ -17,8 +18,8 @@ use Doctrine\ORM\Configuration;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
-use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
+
 
 /**
  * Class RabbitMqTestListener
@@ -110,6 +111,8 @@ class  RabbitMqTestListener implements PHPUnit_Framework_TestListener
      * @inheritDoc
      *
      * @throws \InvalidArgumentException
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\ORM\ORMException
      */
     public function startTest(PHPUnit_Framework_Test $test)
     {
@@ -119,6 +122,12 @@ class  RabbitMqTestListener implements PHPUnit_Framework_TestListener
         }
     }
 
+    /**
+     * @return EntityManager
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \InvalidArgumentException
+     */
     public function  getEntityManager()
     {
         $cache = new ArrayCache();
@@ -130,9 +139,16 @@ class  RabbitMqTestListener implements PHPUnit_Framework_TestListener
         $config->setProxyNamespace('Workflow\Proxies');
 
         $driverChain = new MappingDriverChain();
-        $xmDriver = new XmlDriver([Paths::getPathToDoctrineMetadata()]);
-        $driverChain->addDriver($xmDriver, 'OldTown\Workflow\Loader');
-        $driverChain->addDriver($xmDriver, 'OldTown\Workflow\Spi\Doctrine');
+
+        $annotationProjectDriver = $config->newDefaultAnnotationDriver([Paths::getPathToDoctrineMetadata()], false);
+        $driverChain->addDriver($annotationProjectDriver, 'OldTown\Workflow\Spi\Doctrine\Entity');
+
+
+
+
+
+        $xmDescriptorDriver = new XmlDriver([Paths::getPathToDescriptorDoctrineMetadata()]);
+        $driverChain->addDriver($xmDescriptorDriver, 'OldTown\Workflow\Loader');
 
         $config->setMetadataDriverImpl($driverChain);
 
@@ -145,6 +161,7 @@ class  RabbitMqTestListener implements PHPUnit_Framework_TestListener
         $conn = DriverManager::getConnection($conf);
 
         $em = EntityManager::create($conn, $config);
+
 
         return $em;
     }

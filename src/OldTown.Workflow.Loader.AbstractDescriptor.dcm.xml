@@ -1,9 +1,0 @@
-<doctrine-mapping>
-    <entity name="OldTown\Workflow\Loader\AbstractDescriptor">
-        <id name="entityId">
-            <generator strategy="AUTO" />
-        </id>
-        <field name="id" column="id"/>
-
-    </entity>
-</doctrine-mapping>

@@ -8,4 +8,8 @@
 Обсуждение проблем https://github.com/old-town/workflow-doctrine/issues
 
 
+==Структуда директорий==
+* config/doctrine/entity/BaseDescriptor/ - содержит метаданные для дескрипторов workflow из модуля [old-town/workflow](https://github.com/old-town/old-town-workflow) 
+
+
 

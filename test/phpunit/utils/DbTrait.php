@@ -8,6 +8,7 @@ namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\ORM\Tools\SchemaValidator;
 
 error_reporting(E_ALL | E_STRICT);
 
@@ -34,8 +35,24 @@ trait DbTrait
     {
         $em = $this->getEntityManager();
 
+//        $em->getConnection()->executeQuery('DROP DATABASE `workflow-doctrine`');
+//        $em->getConnection()->executeQuery('CREATE DATABASE `workflow-doctrine`');
+//        $em->getConnection()->close();
+//        $em->getConnection()->connect();
+
+        $validator = new SchemaValidator($em);
+        $errors = $validator->validateMapping();
+        foreach ($errors as $className => $errorMessages) {
+            foreach ($errorMessages as $errorMessage) {
+                var_dump($errorMessage);
+            }
+
+        }
+
+
         $tool = new SchemaTool($em);
         $metadata = $em->getMetadataFactory()->getAllMetadata();
+        $tool->dropDatabase();
         $tool->createSchema($metadata);
     }
 }

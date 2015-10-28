@@ -33,6 +33,14 @@ class Paths
      */
     protected static $pathToDoctrineMetadata;
 
+
+    /**
+     * Путь до директории где храняться конфиги с метаданными сущностей дескриптора
+     *
+     * @var string
+     */
+    protected static $pathToDescriptorDoctrineMetadata;
+
     /**
      * Путь до директории где создаются прокси классы для тестов
      *
@@ -40,6 +48,21 @@ class Paths
      */
     protected static $pathToTestDoctrineProxies;
 
+    /**
+     * Возвращает путь до директории где создаются прокси классы для тестов
+     *
+     * @return string
+     */
+    public static function getPathToDescriptorDoctrineMetadata()
+    {
+        if (static::$pathToDescriptorDoctrineMetadata) {
+            return static::$pathToDescriptorDoctrineMetadata;
+        }
+
+        static::$pathToDescriptorDoctrineMetadata = __DIR__ . '/../../config/doctrine/entity/BaseDescriptor';
+
+        return static::$pathToDescriptorDoctrineMetadata;
+    }
 
     /**
      * Возвращает путь до директории где создаются прокси классы для тестов
@@ -58,7 +81,7 @@ class Paths
     }
 
     /**
-     * Возвращает путь до директории с данными для тестов
+     * Возвращает путь до директории где храняться конфиги с метаданными для сущностей проекта
      *
      * @return string
      */
@@ -68,7 +91,7 @@ class Paths
             return static::$pathToDoctrineMetadata;
         }
 
-        static::$pathToDoctrineMetadata = __DIR__ . '/../../src';
+        static::$pathToDoctrineMetadata = __DIR__ . '/../../src/Entity';
 
         return static::$pathToDoctrineMetadata;
     }
