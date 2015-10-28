@@ -143,11 +143,11 @@ class  RabbitMqTestListener implements PHPUnit_Framework_TestListener
         $annotationProjectDriver = $config->newDefaultAnnotationDriver([Paths::getPathToDoctrineMetadata()], false);
         $driverChain->addDriver($annotationProjectDriver, 'OldTown\Workflow\Spi\Doctrine\Entity');
 
+        $xmProjectDriver = new XmlDriver([Paths::getPathToOverrideDescriptorDoctrineMetadata()]);
+        $driverChain->addDriver($xmProjectDriver, 'OldTown\Workflow\Spi\Doctrine\Entity\OverrideDescriptor');
 
 
-
-
-        $xmDescriptorDriver = new XmlDriver([Paths::getPathToDescriptorDoctrineMetadata()]);
+        $xmDescriptorDriver = new XmlDriver([Paths::getPathToBaseDescriptorDoctrineMetadata()]);
         $driverChain->addDriver($xmDescriptorDriver, 'OldTown\Workflow\Loader');
 
         $config->setMetadataDriverImpl($driverChain);

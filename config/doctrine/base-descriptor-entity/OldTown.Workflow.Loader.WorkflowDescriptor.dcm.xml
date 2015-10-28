@@ -5,11 +5,11 @@
     <entity name="OldTown\Workflow\Loader\WorkflowDescriptor" table="workflow_descriptor">
         <field name="workflowName" column="name" type="string"/>
 
-        <one-to-many field="metaAttributes" target-entity="OldTown\Workflow\Spi\Doctrine\Entity\Args\WorkflowMetaAttributes" mapped-by="workflow" index-by="name"/>
+        <one-to-many field="metaAttributes" target-entity="OldTown\Workflow\Spi\Doctrine\Entity\Descriptor\Args\WorkflowMetaAttributes" mapped-by="workflow" index-by="name"/>
 
-        <one-to-many field="steps" target-entity="OldTown\Workflow\Spi\Doctrine\Entity\Step" mapped-by="workflowDescriptor"/>
+        <one-to-many field="steps" target-entity="OldTown\Workflow\Spi\Doctrine\Entity\Descriptor\Step" mapped-by="workflowDescriptor"/>
 
-        <one-to-many field="timerFunctions" target-entity="OldTown\Workflow\Spi\Doctrine\Entity\WorkflowTimerFunction" mapped-by="workflowDescriptor"/>
+        <one-to-many field="timerFunctions" target-entity="OldTown\Workflow\Spi\Doctrine\Entity\Descriptor\WorkflowTimerFunction" mapped-by="workflowDescriptor"/>
 
     </entity>
 </doctrine-mapping>

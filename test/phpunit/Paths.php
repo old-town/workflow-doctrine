@@ -35,11 +35,19 @@ class Paths
 
 
     /**
-     * Путь до директории где храняться конфиги с метаданными сущностей дескриптора
+     * Путь до директории где храняться конфиги с метаданными для сущностей из модуля old-town/workflow
      *
      * @var string
      */
-    protected static $pathToDescriptorDoctrineMetadata;
+    protected static $pathToBaseDescriptorDoctrineMetadata;
+
+
+    /**
+     * Путь до директории где храняться конфиги с метаданными для сущностей проекта которые расширяют дескрипторы old-town/workflow
+     *
+     * @var string
+     */
+    protected static $pathToOverrideDescriptorDoctrineMetadata;
 
     /**
      * Путь до директории где создаются прокси классы для тестов
@@ -49,19 +57,35 @@ class Paths
     protected static $pathToTestDoctrineProxies;
 
     /**
-     * Возвращает путь до директории где создаются прокси классы для тестов
+     * Возвращает путь до директории где храняться конфиги с метаданными для сущностей из модуля old-town/workflow
      *
      * @return string
      */
-    public static function getPathToDescriptorDoctrineMetadata()
+    public static function getPathToBaseDescriptorDoctrineMetadata()
     {
-        if (static::$pathToDescriptorDoctrineMetadata) {
-            return static::$pathToDescriptorDoctrineMetadata;
+        if (static::$pathToBaseDescriptorDoctrineMetadata) {
+            return static::$pathToBaseDescriptorDoctrineMetadata;
         }
 
-        static::$pathToDescriptorDoctrineMetadata = __DIR__ . '/../../config/doctrine/entity/BaseDescriptor';
+        static::$pathToBaseDescriptorDoctrineMetadata = __DIR__ . '/../../config/doctrine/entity/BaseDescriptor';
 
-        return static::$pathToDescriptorDoctrineMetadata;
+        return static::$pathToBaseDescriptorDoctrineMetadata;
+    }
+
+    /**
+     * Возвращаетют путь до директории где храняться конфиги с метаданными для сущностей проекта которые расширяют дескрипторы old-town/workflow
+     *
+     * @return string
+     */
+    public static function getPathToOverrideDescriptorDoctrineMetadata()
+    {
+        if (static::$pathToOverrideDescriptorDoctrineMetadata) {
+            return static::$pathToOverrideDescriptorDoctrineMetadata;
+        }
+
+        static::$pathToOverrideDescriptorDoctrineMetadata = __DIR__ . '/../../config/doctrine/entity/OverrideDescriptor';
+
+        return static::$pathToOverrideDescriptorDoctrineMetadata;
     }
 
     /**

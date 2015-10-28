@@ -3,18 +3,17 @@
  * @link    https://github.com/old-town/workflow-doctrine
  * @author  Malofeykin Andrey  <and-rey2@yandex.ru>
  */
-namespace OldTown\Workflow\Spi\Doctrine\Entity\Args;
+namespace OldTown\Workflow\Spi\Doctrine\Entity\Descriptor\Args;
 
 use Doctrine\ORM\Mapping as ORM;
 use OldTown\Workflow\Loader\FunctionDescriptor;
 
-
 /**
- * Class FunctionArgs
- *
  * @ORM\Entity()
  *
- * @package OldTown\Workflow\Spi\Doctrine\Entity\Args
+ * Class FunctionArgs
+ *
+ * @package OldTown\Workflow\Spi\Doctrine\Entity\Descriptor\Args
  */
 class FunctionArgs extends AbstractArgs
 {

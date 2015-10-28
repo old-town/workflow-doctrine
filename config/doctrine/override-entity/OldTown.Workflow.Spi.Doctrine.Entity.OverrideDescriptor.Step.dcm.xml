@@ -2,12 +2,12 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                    https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
-    <entity name="\OldTown\Workflow\Spi\Doctrine\Entity\Step" table="workflow_step">
+    <entity name="OldTown\Workflow\Spi\Doctrine\Entity\OverrideDescriptor\Step" table="workflow_step">
         <discriminator-column name="step_type"/>
 
         <field name="name" column="name" type="string"/>
 
-        <one-to-many field="metaAttributes" target-entity="OldTown\Workflow\Spi\Doctrine\Entity\Args\StepMetaAttributes" mapped-by="step" index-by="name"/>
+        <one-to-many field="metaAttributes" target-entity="OldTown\Workflow\Spi\Doctrine\Entity\Descriptor\Args\StepMetaAttributes" mapped-by="step" index-by="name"/>
         <many-to-one target-entity="OldTown\Workflow\Loader\WorkflowDescriptor" field="workflowDescriptor" inversed-by="steps">
             <join-column name="workflow_descriptor_id" referenced-column-name="entity_id"/>
         </many-to-one>

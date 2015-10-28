@@ -3,7 +3,7 @@
  * @link    https://github.com/old-town/workflow-doctrine
  * @author  Malofeykin Andrey  <and-rey2@yandex.ru>
  */
-namespace OldTown\Workflow\Spi\Doctrine\Entity\Args;
+namespace OldTown\Workflow\Spi\Doctrine\Entity\Descriptor\Args;
 
 use Doctrine\ORM\Mapping as ORM;
 use OldTown\Workflow\Loader\ValidatorDescriptor;
@@ -11,7 +11,7 @@ use OldTown\Workflow\Loader\ValidatorDescriptor;
 /**
  * Class WorkflowMetaAttributes
  *
- * @package OldTown\Workflow\Spi\Doctrine\Entity\Args
+ * @package OldTown\Workflow\Spi\Doctrine\Entity\Descriptor\Args
  *
  * @ORM\Entity()
  */

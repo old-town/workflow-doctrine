@@ -3,7 +3,7 @@
  * @link    https://github.com/old-town/workflow-doctrine
  * @author  Malofeykin Andrey  <and-rey2@yandex.ru>
  */
-namespace OldTown\Workflow\Spi\Doctrine\Entity;
+namespace OldTown\Workflow\Spi\Doctrine\Entity\Descriptor;
 
 
 use Doctrine\ORM\Mapping as ORM;
@@ -15,7 +15,7 @@ use OldTown\Workflow\Loader\WorkflowDescriptor;
  *
  * @ORM\Entity()
  *
- * @package OldTown\Workflow\Spi\Doctrine
+ * @package OldTown\Workflow\Spi\Doctrine\Entity\Descriptor
  */
 class WorkflowTimerFunction extends FunctionDescriptor
 {
