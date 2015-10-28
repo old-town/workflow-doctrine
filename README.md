@@ -10,6 +10,9 @@
 
 # Структуда директорий 
 * config/doctrine/entity/BaseDescriptor/ - содержит метаданные для дескрипторов workflow из модуля [old-town/workflow](https://github.com/old-town/old-town-workflow) 
+* config/doctrine/entity/Descriptor/ - содержит метаданные для дескрипторов которые были отнаследованы от дескрипторов
+модуля [old-town/workflow](https://github.com/old-town/old-town-workflow). Такое наследование потребовалось, что бы
+добавить обратные связи, для асоциаций типа one-to-many
 
 
 
