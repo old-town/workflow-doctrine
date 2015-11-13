@@ -5,23 +5,15 @@
  */
 namespace OldTown\Workflow\Spi\Doctrine\OverrideEntity;
 
-
 use Doctrine\ORM\Mapping as ORM;
-use OldTown\Workflow\Loader\StepDescriptor;
 use OldTown\Workflow\Loader\WorkflowDescriptor;
 
 /**
- * Class Step
+ * Class Workflow
  *
  * @package OldTown\Workflow\Spi\Doctrine\OverrideEntity
  */
-class Step extends StepDescriptor
+class Workflow extends WorkflowDescriptor
 {
-    /**
-     * Связь с дескриптором WorkflowDescriptor
-     *
-     * @var WorkflowDescriptor
-     */
-    protected $workflowDescriptor;
 
 }

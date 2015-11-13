@@ -5,7 +5,7 @@
  */
 namespace OldTown\Workflow\Spi\Doctrine\Entity;
 
-use OldTown\Workflow\Loader\WorkflowDescriptor;
+use OldTown\Workflow\Spi\Doctrine\OverrideEntity\Workflow;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -29,11 +29,11 @@ class WorkflowName
     protected $workflowName;
 
     /**
-     * @ORM\ManyToOne(targetEntity="OldTown\Workflow\Loader\WorkflowDescriptor",  cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="OldTown\Workflow\Spi\Doctrine\OverrideEntity\Workflow",  cascade={"persist"})
      * @ORM\JoinColumn(name="workflow_descriptor_id", referencedColumnName="entity_id")
      *
      *
-     * @var WorkflowDescriptor
+     * @var Workflow
      */
     protected $workflowDescriptor;
 
@@ -58,7 +58,7 @@ class WorkflowName
     }
 
     /**
-     * @return WorkflowDescriptor
+     * @return Workflow
      */
     public function getWorkflowDescriptor()
     {
@@ -66,11 +66,11 @@ class WorkflowName
     }
 
     /**
-     * @param WorkflowDescriptor $workflowDescriptor
+     * @param Workflow $workflowDescriptor
      *
      * @return $this
      */
-    public function setWorkflowDescriptor(WorkflowDescriptor $workflowDescriptor)
+    public function setWorkflowDescriptor(Workflow $workflowDescriptor)
     {
         $this->workflowDescriptor = $workflowDescriptor;
 

@@ -27,7 +27,8 @@ class Paths
     protected static $pathToTestDataDir;
 
     /**
-     * Путь до директории где храняться конфиги с метаданными сущностей
+     * Путь до директории где классы сущностей с метаданными. Здесь локализированы сущности реализованные непосредственно
+     * в данном модуле
      *
      * @var string
      */
@@ -47,7 +48,7 @@ class Paths
      *
      * @var string
      */
-    protected static $pathToOverrideDescriptorDoctrineMetadata;
+    protected static $pathToOverrideEntityDoctrineMetadata;
 
     /**
      * Путь до директории где создаются прокси классы для тестов
@@ -67,7 +68,7 @@ class Paths
             return static::$pathToBaseDescriptorDoctrineMetadata;
         }
 
-        static::$pathToBaseDescriptorDoctrineMetadata = __DIR__ . '/../../config/doctrine/entity/BaseDescriptor';
+        static::$pathToBaseDescriptorDoctrineMetadata = __DIR__ . '/../../config/doctrine/base-descriptor-entity';
 
         return static::$pathToBaseDescriptorDoctrineMetadata;
     }
@@ -77,15 +78,15 @@ class Paths
      *
      * @return string
      */
-    public static function getPathToOverrideDescriptorDoctrineMetadata()
+    public static function getPathToOverrideEntityDoctrineMetadata()
     {
-        if (static::$pathToOverrideDescriptorDoctrineMetadata) {
-            return static::$pathToOverrideDescriptorDoctrineMetadata;
+        if (static::$pathToOverrideEntityDoctrineMetadata) {
+            return static::$pathToOverrideEntityDoctrineMetadata;
         }
 
-        static::$pathToOverrideDescriptorDoctrineMetadata = __DIR__ . '/../../config/doctrine/entity/OverrideDescriptor';
+        static::$pathToOverrideEntityDoctrineMetadata = __DIR__ . '/../../config/doctrine/override-entity';
 
-        return static::$pathToOverrideDescriptorDoctrineMetadata;
+        return static::$pathToOverrideEntityDoctrineMetadata;
     }
 
     /**
@@ -105,7 +106,8 @@ class Paths
     }
 
     /**
-     * Возвращает путь до директории где храняться конфиги с метаданными для сущностей проекта
+     * Возвращает путь до директории где находядтся классы сущностей с метаданными. Здесь локализированы сущности реализованные непосредственно
+     * в данном модуле
      *
      * @return string
      */

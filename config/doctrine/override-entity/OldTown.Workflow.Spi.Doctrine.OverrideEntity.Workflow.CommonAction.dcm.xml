@@ -2,11 +2,11 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                    https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
-    <entity name="OldTown\Workflow\Loader\ValidatorDescriptor" table="validator_descriptor">
-        <field name="name" column="name" type="string"/>
-        <field name="type" column="type" type="string"/>
+    <entity name="OldTown\Workflow\Spi\Doctrine\OverrideEntity\Workflow\CommonAction" table="common_action_descriptor">
 
-        <one-to-many field="args" target-entity="OldTown\Workflow\Spi\Doctrine\Entity\Descriptor\Args\ValidatorArgs" mapped-by="validator" index-by="name"/>
+
+
+        <many-to-one target-entity="OldTown\Workflow\Spi\Doctrine\OverrideEntity\Workflow" field="workflow" inversed-by="commonActions"/>
 
     </entity>
 </doctrine-mapping>

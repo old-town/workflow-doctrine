@@ -19,7 +19,7 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\DBAL\DriverManager;
-
+use OldTown\Workflow\Spi\Doctrine\Listener\Entity\FunctionDescriptor;
 
 /**
  * Class RabbitMqTestListener
@@ -143,8 +143,8 @@ class  RabbitMqTestListener implements PHPUnit_Framework_TestListener
         $annotationProjectDriver = $config->newDefaultAnnotationDriver([Paths::getPathToDoctrineMetadata()], false);
         $driverChain->addDriver($annotationProjectDriver, 'OldTown\Workflow\Spi\Doctrine\Entity');
 
-        $xmProjectDriver = new XmlDriver([Paths::getPathToOverrideDescriptorDoctrineMetadata()]);
-        $driverChain->addDriver($xmProjectDriver, 'OldTown\Workflow\Spi\Doctrine\Entity\OverrideDescriptor');
+        $xmProjectDriver = new XmlDriver([Paths::getPathToOverrideEntityDoctrineMetadata()]);
+        $driverChain->addDriver($xmProjectDriver, 'OldTown\Workflow\Spi\Doctrine\OverrideEntity');
 
 
         $xmDescriptorDriver = new XmlDriver([Paths::getPathToBaseDescriptorDoctrineMetadata()]);
@@ -162,6 +162,7 @@ class  RabbitMqTestListener implements PHPUnit_Framework_TestListener
 
         $em = EntityManager::create($conn, $config);
 
+        $em->getEventManager()->addEventSubscriber(new FunctionDescriptor());
 
         return $em;
     }
