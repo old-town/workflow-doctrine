@@ -5,8 +5,6 @@
  */
 namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils;
 
-
-
 use OldTown\Workflow\Spi\Doctrine\PhpUnit\Test\Paths;
 use PHPUnit_Framework_TestListener;
 use PHPUnit_Framework_Test;
@@ -17,16 +15,15 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
-use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\DBAL\DriverManager;
-use OldTown\Workflow\Spi\Doctrine\Listener\Entity\FunctionDescriptor;
+
 
 /**
- * Class RabbitMqTestListener
+ * Class EntityManagerListener
  *
  * @package OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils
  */
-class  RabbitMqTestListener implements PHPUnit_Framework_TestListener
+class  EntityManagerListener implements PHPUnit_Framework_TestListener
 {
 
     /**
@@ -136,19 +133,13 @@ class  RabbitMqTestListener implements PHPUnit_Framework_TestListener
         $config->setQueryCacheImpl($cache);
         $config->setAutoGenerateProxyClasses(false);
         $config->setProxyDir(Paths::getPathToTestDoctrineProxies());
+        $config->setAutoGenerateProxyClasses(true);
         $config->setProxyNamespace('Workflow\Proxies');
 
         $driverChain = new MappingDriverChain();
 
         $annotationProjectDriver = $config->newDefaultAnnotationDriver([Paths::getPathToDoctrineMetadata()], false);
         $driverChain->addDriver($annotationProjectDriver, 'OldTown\Workflow\Spi\Doctrine\Entity');
-
-        $xmProjectDriver = new XmlDriver([Paths::getPathToOverrideEntityDoctrineMetadata()]);
-        $driverChain->addDriver($xmProjectDriver, 'OldTown\Workflow\Spi\Doctrine\OverrideEntity');
-
-
-        $xmDescriptorDriver = new XmlDriver([Paths::getPathToBaseDescriptorDoctrineMetadata()]);
-        $driverChain->addDriver($xmDescriptorDriver, 'OldTown\Workflow\Loader');
 
         $config->setMetadataDriverImpl($driverChain);
 
@@ -161,8 +152,6 @@ class  RabbitMqTestListener implements PHPUnit_Framework_TestListener
         $conn = DriverManager::getConnection($conf);
 
         $em = EntityManager::create($conn, $config);
-
-        $em->getEventManager()->addEventSubscriber(new FunctionDescriptor());
 
         return $em;
     }

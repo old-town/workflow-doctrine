@@ -29,7 +29,7 @@
 
 
     <listeners>
-        <listener class="\OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils\RabbitMqTestListener" file="./test/phpunit/utils/EntityManagerListener.php">
+        <listener class="\OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils\EntityManagerListener" file="./test/phpunit/utils/EntityManagerListener.php">
             <arguments>
                 <array>
                     <!-- Конфиг соеденения для тестов-->

@@ -100,7 +100,8 @@ class Paths
             return static::$pathToTestDoctrineProxies;
         }
 
-        static::$pathToTestDoctrineProxies = __DIR__ . '/../../data/test/Proxies';
+        $path = __DIR__ . '/../../data/test/Proxies';
+        static::$pathToTestDoctrineProxies = realpath($path);
 
         return static::$pathToTestDoctrineProxies;
     }
