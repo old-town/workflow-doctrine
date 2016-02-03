@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity(repositoryClass="\OldTown\Workflow\Spi\Doctrine\EntityRepository\StepRepository")
  */
-class CurrentStep extends Step
+class CurrentStep extends AbstractStep
 {
 
 

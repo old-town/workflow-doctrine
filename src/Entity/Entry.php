@@ -47,8 +47,7 @@ class Entry implements WorkflowEntryInterface
     protected $state;
 
     /**
-     * @ORM\OneToMany(targetEntity="\OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep", mappedBy="entry")
-     * @ORM\JoinColumn(name="entry_id", referencedColumnName="id")
+     * @ORM\OneToMany(targetEntity="AbstractStep", mappedBy="entry")
      *
      * @var CurrentStep[]|ArrayCollection
      */
@@ -145,10 +144,12 @@ class Entry implements WorkflowEntryInterface
      *
      * @return $this
      */
-    public function addCurrentStep(CurrentStep $currentStep)
+    public function addCurrentSteps(CurrentStep $currentStep)
     {
         $currentStep->setEntry($this);
-        $this->getCurrentSteps()->add($currentStep);
+        if (!$this->getCurrentSteps()->contains($currentStep)) {
+            $this->getCurrentSteps()->add($currentStep);
+        }
 
         return $this;
     }

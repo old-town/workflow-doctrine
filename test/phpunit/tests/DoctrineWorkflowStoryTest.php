@@ -24,24 +24,6 @@ class DoctrineWorkflowStoryTest extends TestCase implements EntityManagerAwareIn
 {
     use DirUtilTrait, DbTrait, EntityManagerAwareTrait;
 
-    /**
-     * Подготавливаем базу
-     *
-     */
-    protected function setUp()
-    {
-        $schemaManager = $this->getEntityManager()->getConnection()->getSchemaManager();
-        $tables = $schemaManager->listTableNames();
-
-        foreach ($tables as $table) {
-            $schemaManager->dropTable($table);
-        }
-
-        $this->createSchema();
-
-        parent::setUp();
-
-    }
 
     /**
      * При попытке инициировать адаптер для работы с доктриной, в случае если не указаны настройки

@@ -6,7 +6,7 @@
 namespace OldTown\Workflow\Spi\Doctrine\EntityRepository;
 
 use Doctrine\ORM\EntityRepository;
-use \OldTown\Workflow\Spi\Doctrine\Entity\Step;
+use \OldTown\Workflow\Spi\Doctrine\Entity\AbstractStep;
 
 class StepRepository extends EntityRepository
 {
@@ -33,7 +33,7 @@ class StepRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameter('stepIds', $listId);
 
-        /** @var Step[] $steps */
+        /** @var AbstractStep[] $steps */
         $steps = $query->getResult();
 
         if ($countListId !== count($steps)) {

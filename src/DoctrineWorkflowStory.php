@@ -6,6 +6,7 @@
 namespace OldTown\Workflow\Spi\Doctrine;
 
 use DateTime;
+use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStep;
 use ReflectionClass;
 use OldTown\Workflow\Query\WorkflowExpressionQuery;
 use OldTown\Workflow\Spi\StepInterface;
@@ -242,6 +243,105 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
         return $id;
     }
 
+    /**
+     * @param int $entryId
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection|Entity\CurrentStep[]
+     *
+     * @return StepInterface[]
+     *
+     * @throws Exception\DoctrineRuntimeException
+     */
+    public function findCurrentSteps($entryId)
+    {
+        $em = $this->getEntityManager();
+
+        /** @var Entry $entry */
+        $entry = $em->getRepository(Entry::class)->find($entryId);
+
+        $currentSteps = $entry->getCurrentSteps()->toArray();
+
+        return $currentSteps;
+    }
+
+
+    /**
+     * @param integer $entryId
+     * @return WorkflowEntryInterface
+     *
+     * @throws Exception\DoctrineRuntimeException
+     */
+    public function findEntry($entryId)
+    {
+        $em = $this->getEntityManager();
+
+        /** @var Entry $entry */
+        $entry = $em->getRepository(Entry::class)->find($entryId);
+
+        return $entry;
+    }
+
+    /**
+     * Помечает шаг как выполенный
+     *
+     * @param StepInterface $step
+     * @param int           $actionId
+     * @param DateTime      $finishDate
+     * @param string        $status
+     * @param string        $caller
+     *
+     * @return StepInterface
+     *
+     * @throws Exception\DoctrineRuntimeException
+     */
+    public function markFinished(StepInterface $step, $actionId, DateTime $finishDate, $status, $caller)
+    {
+        $step->setActionId($actionId);
+        $step->setFinishDate($finishDate);
+        $step->setStatus($status);
+        $step->setCaller($caller);
+
+        $em = $this->getEntityManager();
+
+        $em->persist($step);
+        $em->flush();
+
+        return $step;
+    }
+
+
+    /**
+     * Перемещает шаг в архив
+     *
+     * @param StepInterface $step
+     *
+     * @return $this|void
+     *
+     * @throws Exception\InvalidArgumentException
+     * @throws \OldTown\Workflow\Spi\Doctrine\Exception\DoctrineRuntimeException
+     * @throws \OldTown\Workflow\Spi\Doctrine\Entity\Exception\InvalidArgumentException
+     */
+    public function moveToHistory(StepInterface $step)
+    {
+        if (!$step instanceof CurrentStep) {
+            $errMsg = sprintf('Step not implement %s', CurrentStep::class);
+            throw new Exception\InvalidArgumentException($errMsg);
+        }
+        $historyStep = new HistoryStep($step);
+
+        $em = $this->getEntityManager();
+        $em->persist($historyStep);
+        $em->remove($step);
+        $em->flush();
+    }
+
+
+
+
+
+
+
+
 
 
 
@@ -260,30 +360,17 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
 
 
 
-    public function findCurrentSteps($entryId)
-    {
-        // TODO: Implement findCurrentSteps() method.
-    }
 
-    public function findEntry($entryId)
-    {
-        // TODO: Implement findEntry() method.
-    }
+
 
     public function findHistorySteps($entryId)
     {
         // TODO: Implement findHistorySteps() method.
     }
 
-    public function markFinished(StepInterface $step, $actionId, DateTime $finishDate, $status, $caller)
-    {
-        // TODO: Implement markFinished() method.
-    }
 
-    public function moveToHistory(StepInterface $step)
-    {
-        // TODO: Implement moveToHistory() method.
-    }
+
+
 
     public function query(WorkflowExpressionQuery $query)
     {

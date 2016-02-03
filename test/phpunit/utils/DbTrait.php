@@ -55,4 +55,17 @@ trait DbTrait
         $tool->dropDatabase();
         $tool->createSchema($metadata);
     }
+
+
+    /**
+     *  Создает схему БД
+     *
+     * @throws \Doctrine\ORM\Tools\ToolsException
+     */
+    public function dropSchema()
+    {
+        $em = $this->getEntityManager();
+        $tool = new SchemaTool($em);
+        $tool->dropDatabase();
+    }
 }

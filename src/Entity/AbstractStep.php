@@ -19,7 +19,7 @@ use Traversable;
  *
  * @ORM\Entity()
  * @ORM\Table(
- *     name="wf_current_step",
+ *     name="wf_step",
  *     indexes={
  *         @ORM\Index(name="owner", columns={"owner"}),
  *         @ORM\Index(name="caller", columns={"caller"})
@@ -27,9 +27,9 @@ use Traversable;
  * )
  * @ORM\InheritanceType(value="SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap(value={"currentStep" = "CurrentStep"})
+ * @ORM\DiscriminatorMap(value={"currentStep" = "CurrentStep", "historyStep"="HistoryStep"})
  */
-abstract class Step implements StepInterface
+abstract class AbstractStep implements StepInterface
 {
     /**
      * @ORM\Id()
@@ -41,7 +41,7 @@ abstract class Step implements StepInterface
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="\OldTown\Workflow\Spi\Doctrine\Entity\Entry", inversedBy="currentSteps")
+     * @ORM\ManyToOne(targetEntity="Entry", inversedBy="currentSteps")
      * @ORM\JoinColumn(name="entry_id", referencedColumnName="id")
      *
      * @var Entry
@@ -106,14 +106,14 @@ abstract class Step implements StepInterface
 
     /**
      *
-     * @ORM\ManyToMany(targetEntity="Step")
+     * @ORM\ManyToMany(targetEntity="AbstractStep")
      * @ORM\JoinTable(
      *     name="wf_previous_step",
      *     joinColumns={@ORM\JoinColumn(name="current_step_id", referencedColumnName="id")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="previous_step_id", referencedColumnName="id")}
      * )
      *
-     * @var ArrayCollection|Step[]
+     * @var ArrayCollection|AbstractStep[]
      */
     protected $previousSteps;
 
@@ -163,6 +163,10 @@ abstract class Step implements StepInterface
     public function setEntry(Entry $entry)
     {
         $this->entry = $entry;
+
+        if (!$entry->getCurrentSteps()->contains($this)) {
+            $entry->getCurrentSteps()->add($this);
+        }
 
         return $this;
     }
@@ -355,7 +359,7 @@ abstract class Step implements StepInterface
     }
 
     /**
-     * @return ArrayCollection|Step[]
+     * @return ArrayCollection|AbstractStep[]
      */
     public function getPreviousSteps()
     {
@@ -363,7 +367,7 @@ abstract class Step implements StepInterface
     }
 
     /**
-     * @param ArrayCollection|Step[] $previousSteps
+     * @param ArrayCollection|AbstractStep[] $previousSteps
      *
      * @return $this
      *
@@ -377,8 +381,8 @@ abstract class Step implements StepInterface
         }
 
         foreach ($previousSteps as $previousStep) {
-            if (!$previousStep instanceof Step) {
-                $errMsg = sprintf('step not implement %s', Step::class);
+            if (!$previousStep instanceof AbstractStep) {
+                $errMsg = sprintf('step not implement %s', AbstractStep::class);
                 throw new Exception\InvalidArgumentException($errMsg);
             }
             $this->previousSteps->add($previousStep);
