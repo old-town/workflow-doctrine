@@ -42,7 +42,7 @@
     "phpunit/phpunit": "4.7.7",
     "phpunit/phpcov": "2.0.1",
     "zendframework/zend-loader": "~2.4.0",
-    "satooshi/php-coveralls": "dev-master",
+    "satooshi/php-coveralls": "dev-test",
     "behat/behat": "~3.0",
     "vipsoft/code-coverage-extension": "~3@dev",
     "ramsey/uuid" : "~3.0.0"
