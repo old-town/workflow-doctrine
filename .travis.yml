@@ -36,9 +36,9 @@ script:
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then  ./vendor/bin/php-cs-fixer fix -v --diff --dry-run --config-file ./.php_cs ; fi
 
 after_script:
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/phpcov merge --clover $TRAVIS_BUILD_DIR/build/log/clover.xml $TRAVIS_BUILD_DIR/build/log/coverage ; fi
+  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/phpcov merge --clover $TRAVIS_BUILD_DIR/build/logs/clover.xml $TRAVIS_BUILD_DIR/build/logs/coverage ; fi
   - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then  ls -al $TRAVIS_BUILD_DIR/build/   ; fi
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/coveralls -v --config .coveralls.yml --root_dir src --coverage_clover=$TRAVIS_BUILD_DIR/build/log/clover.xml; fi
+  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/coveralls -v --config .coveralls.yml --root_dir src --coverage_clover=$TRAVIS_BUILD_DIR/build/logs/clover.xml; fi
 
 notifications:
   email:
