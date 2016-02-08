@@ -38,7 +38,7 @@ script:
 after_script:
   - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/phpcov merge --clover .reports/clover.xml .reports/coverage ; fi
   - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ls ./.reports ; fi
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/coveralls -v --config .coveralls.yml --root_dir src --coverage_clover=.reports/clover.xml; fi
+  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/coveralls -v --config .coveralls.yml --root_dir src --coverage_clover=$TRAVIS_BUILD_DIR/.reports/clover.xml; fi
 
 notifications:
   email:
