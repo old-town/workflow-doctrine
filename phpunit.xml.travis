@@ -39,16 +39,10 @@
                             <element key="params">
                                 <array>
                                     <element key="host">
-                                        <string>test_hosts</string>
-                                    </element>
-                                    <element key="port">
-                                        <string>test_port</string>
+                                        <string>127.0.0.1</string>
                                     </element>
                                     <element key="user">
-                                        <string>test_user</string>
-                                    </element>
-                                    <element key="password">
-                                        <string>test_password</string>
+                                        <string>root</string>
                                     </element>
                                     <element key="dbname">
                                         <string>test_database_name</string>

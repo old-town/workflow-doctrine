@@ -41,10 +41,16 @@
                             <element key="params">
                                 <array>
                                     <element key="host">
-                                        <string>127.0.0.1</string>
+                                        <string>test_hosts</string>
+                                    </element>
+                                    <element key="port">
+                                        <string>test_port</string>
                                     </element>
                                     <element key="user">
-                                        <string>root</string>
+                                        <string>test_user</string>
+                                    </element>
+                                    <element key="password">
+                                        <string>test_password</string>
                                     </element>
                                     <element key="dbname">
                                         <string>test_database_name</string>
