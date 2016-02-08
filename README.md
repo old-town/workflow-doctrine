@@ -28,8 +28,8 @@
 ```
 
 Хранилище для работы, должно получить инициализированный и настроенный экземпляр \Doctrine\ORM\EntityManagerInterface.
-Получение менеджера сущностей доктрины делегированно фабрике которая должна реализовывать интерфейс [EntityManagerFactoryInterface](./src/EntityManagerFactory/EntityManagerFactoryInterface).
+Получение менеджера сущностей доктрины делегированно фабрике которая должна реализовывать интерфейс [EntityManagerFactoryInterface](./src/EntityManagerFactory/EntityManagerFactoryInterface.php).
 
-В модуль входит [SimpleEntityManagerFactory](./src/EntityManagerFactory/SimpleEntityManagerFactory) - простая фабрика,
+В модуль входит [SimpleEntityManagerFactory](./src/EntityManagerFactory/SimpleEntityManagerFactory.php) - простая фабрика,
 позволяющая заранее установить менеджер сущностей доктрины. 
 
