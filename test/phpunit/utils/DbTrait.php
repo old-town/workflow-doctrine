@@ -5,7 +5,6 @@
  */
 namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils;
 
-
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
@@ -19,7 +18,6 @@ error_reporting(E_ALL | E_STRICT);
  */
 trait DbTrait
 {
-
     /**
      * @return EntityManager
      *
@@ -30,6 +28,7 @@ trait DbTrait
      *  Создает схему БД
      *
      * @throws \Doctrine\ORM\Tools\ToolsException
+     * @throws \RuntimeException
      */
     public function createSchema()
     {
@@ -42,11 +41,14 @@ trait DbTrait
 
         $validator = new SchemaValidator($em);
         $errors = $validator->validateMapping();
+        $errMsg = [];
         foreach ($errors as $className => $errorMessages) {
             foreach ($errorMessages as $errorMessage) {
-                var_dump($errorMessage);
+                $errMsg[] = $errorMessage;
             }
-
+        }
+        if (count($errMsg) > 0) {
+            throw new \RuntimeException(implode("\n", $errMsg));
         }
 
 

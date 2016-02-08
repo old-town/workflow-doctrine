@@ -150,8 +150,6 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
                 throw new Exception\RuntimeException($errMsg);
             }
             $this->entityManager = $em;
-
-
         } catch (\Exception $e) {
             throw new Exception\DoctrineRuntimeException($e->getMessage(), $e->getCode(), $e);
         }
@@ -327,7 +325,11 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
             $errMsg = sprintf('Step not implement %s', CurrentStep::class);
             throw new Exception\InvalidArgumentException($errMsg);
         }
+        $entry = $step->getEntry();
+
+        $entry->getCurrentSteps()->removeElement($step);
         $historyStep = new HistoryStep($step);
+        $entry->addHistoryStep($historyStep);
 
         $em = $this->getEntityManager();
         $em->persist($historyStep);
@@ -335,7 +337,25 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
         $em->flush();
     }
 
+    /**
+     * Поиск уже пройденных шагов для процесса workflow с заданным id
+     *
+     * @param $entryId
+     *
+     * @return \OldTown\Workflow\Spi\StepInterface[]|\Doctrine\ORM\PersistentCollection|void
+     *
+     * @throws \OldTown\Workflow\Spi\Doctrine\Exception\DoctrineRuntimeException
+     */
+    public function findHistorySteps($entryId)
+    {
+        $em = $this->getEntityManager();
 
+        /** @var Entry $entry */
+        $entry = $em->getRepository(Entry::class)->find($entryId);
+        $historySteps = $entry->getHistorySteps();
+
+        return  $historySteps;
+    }
 
 
 
@@ -363,10 +383,7 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
 
 
 
-    public function findHistorySteps($entryId)
-    {
-        // TODO: Implement findHistorySteps() method.
-    }
+
 
 
 
@@ -376,5 +393,4 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
     {
         // TODO: Implement query() method.
     }
-
 }

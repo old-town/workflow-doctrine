@@ -18,6 +18,8 @@ use OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils\DbTrait;
 use OldTown\Workflow\Spi\Doctrine\DoctrineWorkflowStory;
 use OldTown\Workflow\Spi\Doctrine\Entity\Entry;
 use DateTime;
+use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStep;
+use OldTown\Workflow\Spi\Doctrine\EntityRepository\StepRepository;
 
 /**
  * Class DoctrineWorkflowStoryFunctionalTest
@@ -58,7 +60,6 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         $factory->setEntityManager($this->getEntityManager());
 
         parent::setUp();
-
     }
 
     /**
@@ -86,7 +87,6 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         static::assertEquals($workflowName, $entry->getWorkflowName());
 
         static::assertEquals($entry->getState(), $actualEntry->getState());
-
     }
 
     /**
@@ -154,7 +154,6 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         static::assertEquals($status, $step->getStatus());
         static::assertEquals($entry->getId(), $step->getEntryId());
         static::assertEquals([], array_diff($step->getPreviousStepIds(), $previousIds));
-
     }
 
 
@@ -179,7 +178,7 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         /** @var PersistentCollection|array $currentStepsCollection */
         $currentStepsCollection = $this->doctrineWorkflowStory->findCurrentSteps($entry->getId());
 
-        static::assertEquals([], array_diff($expectedCurrentSteps, array_map(function(StepInterface $step) {
+        static::assertEquals([], array_diff($expectedCurrentSteps, array_map(function (StepInterface $step) {
             return $step->getId();
         }, $currentStepsCollection)));
 
@@ -195,10 +194,9 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         /** @var PersistentCollection|array $currentStepsCollection */
         $currentStepsCollection = $this->doctrineWorkflowStory->findCurrentSteps($entry->getId());
 
-        static::assertEquals([], array_diff($expectedCurrentSteps, array_map(function(StepInterface $step) {
+        static::assertEquals([], array_diff($expectedCurrentSteps, array_map(function (StepInterface $step) {
             return $step->getId();
         }, $currentStepsCollection)));
-
     }
 
     /**
@@ -212,7 +210,6 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         $actualEntry = $this->doctrineWorkflowStory->findEntry($expectedEntry->getId());
 
         static::assertEquals($expectedEntry, $actualEntry);
-
     }
 
 
@@ -256,7 +253,7 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
 
 
     /**
-     * Создать новый шак в процессе workflow
+     * Перенос шага в архив
      *
      */
     public function testMoveToHistory()
@@ -283,12 +280,12 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
 
 
         //create step 3
+        $statusForHistoryStep = 'step_for_move_to_history';
         $stepId = 7;
         $owner = 'test_user_login';
         $startDate = new DateTime();
         $dueDate = new DateTime();
-        $status = 'finish';
-        $id = $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $status, $previousIds);
+        $id = $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $statusForHistoryStep, $previousIds);
 
         $em = $this->getEntityManager();
         /** @var CurrentStep  $step */
@@ -296,6 +293,87 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
 
         $this->doctrineWorkflowStory->moveToHistory($step);
 
+        $em->clear();
 
+        /** @var  HistoryStep $historyStep */
+        $historyStep  = $em->getRepository(HistoryStep::class)->findOneBy(['status' => $statusForHistoryStep]);
+        static::assertInstanceOf(HistoryStep::class, $historyStep);
+
+
+        static::assertEmpty(array_diff($previousIds, $historyStep->getPreviousStepIds()));
+        static::assertCount(count($previousIds), $historyStep->getPreviousStepIds());
+    }
+
+    /**
+     * Тестирование получения уже пройденных шагов
+     *
+     * Также проверяетя сортировка
+     */
+    public function testFindHistorySteps()
+    {
+        $em = $this->doctrineWorkflowStory->getEntityManager();
+        /** @var StepRepository  $currentStepRep */
+        $currentStepRep = $em->getRepository(CurrentStep::class);
+
+        $entry = $this->doctrineWorkflowStory->createEntry('test_workflow_name');
+
+        //create step 1
+        $stepId = 7;
+        $owner = 'test_user_login1';
+        $startDate = new DateTime();
+        $dueDate = new DateTime();
+        $status = 'finish';
+        $id = $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $status);
+        /** @var CurrentStep $step1 */
+        $step1 = $currentStepRep->find($id);
+        $finishDateStep1 = new DateTime('2005-01-01');
+        $this->doctrineWorkflowStory->markFinished($step1, 7, $finishDateStep1, 'test', 'test');
+        $this->doctrineWorkflowStory->moveToHistory($step1);
+
+        //create step 2
+        $stepId = 8;
+        $owner = 'test_user_login1';
+        $startDate = new DateTime();
+        $dueDate = new DateTime();
+        $status = 'finish';
+        $id = $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $status);
+        /** @var CurrentStep $step2 */
+        $step2 = $currentStepRep->find($id);
+        $finishDateStep2 = new DateTime('2003-01-01');
+        $this->doctrineWorkflowStory->markFinished($step2, 7, $finishDateStep2, 'test', 'test');
+        $this->doctrineWorkflowStory->moveToHistory($step2);
+
+        //create step 3
+        $stepId = 9;
+        $owner = 'test_user_login1';
+        $startDate = new DateTime();
+        $dueDate = new DateTime();
+        $status = 'finish';
+        $id = $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $status);
+        /** @var CurrentStep $step3 */
+        $step3 = $currentStepRep->find($id);
+        $finishDateStep3 = new DateTime('2004-01-01');
+        $this->doctrineWorkflowStory->markFinished($step3, 7, $finishDateStep3, 'test', 'test');
+        $this->doctrineWorkflowStory->moveToHistory($step3);
+
+        //create step 4
+        $stepId = 10;
+        $owner = 'test_user_login1';
+        $startDate = new DateTime();
+        $dueDate = new DateTime();
+        $status = 'finish';
+        $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $status);
+
+        $em->clear();
+        /** @var HistoryStep[]|\Iterator $historySteps */
+        $historySteps = $this->doctrineWorkflowStory->findHistorySteps($entry->getId());
+
+        static::assertCount(3, $historySteps);
+
+        static::assertEquals($step2->getStepId(), $historySteps->current()->getStepId());
+        $historySteps->next();
+        static::assertEquals($step3->getStepId(), $historySteps->current()->getStepId());
+        $historySteps->next();
+        static::assertEquals($step1->getStepId(), $historySteps->current()->getStepId());
     }
 }

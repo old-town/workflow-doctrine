@@ -17,6 +17,35 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CurrentStep extends AbstractStep
 {
+    /**
+     * @ORM\ManyToOne(targetEntity="Entry", inversedBy="currentSteps")
+     * @ORM\JoinColumn(name="entry_id", referencedColumnName="id")
+     *
+     * @var Entry
+     */
+    protected $entry;
 
+    /**
+     * @return Entry
+     */
+    public function getEntry()
+    {
+        return $this->entry;
+    }
 
+    /**
+     * @param Entry $entry
+     *
+     * @return $this
+     */
+    public function setEntry(Entry $entry)
+    {
+        $this->entry = $entry;
+
+        if (!$entry->getCurrentSteps()->contains($this)) {
+            $entry->getCurrentSteps()->add($this);
+        }
+
+        return $this;
+    }
 }

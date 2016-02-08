@@ -82,7 +82,6 @@ class DoctrineWorkflowStoryTest extends TestCase implements EntityManagerAwareIn
      */
     public function testGetEntityManagerFactoryClassNotFound()
     {
-
         $doctrineWorkflowStory = new DoctrineWorkflowStory();
         $doctrineWorkflowStory->init([
             DoctrineWorkflowStory::ENTITY_MANAGER_FACTORY => [
@@ -102,7 +101,6 @@ class DoctrineWorkflowStoryTest extends TestCase implements EntityManagerAwareIn
      */
     public function testGetEntityManagerFactoryInvalidClass()
     {
-
         $doctrineWorkflowStory = new DoctrineWorkflowStory();
         $doctrineWorkflowStory->init([
             DoctrineWorkflowStory::ENTITY_MANAGER_FACTORY => [
@@ -163,7 +161,7 @@ class DoctrineWorkflowStoryTest extends TestCase implements EntityManagerAwareIn
 
         $em = $doctrineWorkflowStory->getEntityManager();
 
-        static::assertTrue($em instanceof EntityManagerInterface );
+        static::assertTrue($em instanceof EntityManagerInterface);
 
         //проверка что работает кеширование
         static::assertTrue($em ===  $doctrineWorkflowStory->getEntityManager());

@@ -5,7 +5,6 @@
  */
 namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils;
 
-use Exception;
 use Doctrine\ORM\EntityManager;
 
 /**

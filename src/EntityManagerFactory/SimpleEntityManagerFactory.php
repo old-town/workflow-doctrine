@@ -83,6 +83,4 @@ class SimpleEntityManagerFactory implements EntityManagerFactoryInterface
 
         return $this;
     }
-
-
 }

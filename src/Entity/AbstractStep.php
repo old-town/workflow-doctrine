@@ -41,14 +41,6 @@ abstract class AbstractStep implements StepInterface
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Entry", inversedBy="currentSteps")
-     * @ORM\JoinColumn(name="entry_id", referencedColumnName="id")
-     *
-     * @var Entry
-     */
-    protected $entry;
-
-    /**
      * @ORM\Column(name="action_Id", type="integer", nullable=true)
      *
      * @var integer
@@ -148,30 +140,6 @@ abstract class AbstractStep implements StepInterface
     }
 
     /**
-     * @return Entry
-     */
-    public function getEntry()
-    {
-        return $this->entry;
-    }
-
-    /**
-     * @param Entry $entry
-     *
-     * @return $this
-     */
-    public function setEntry(Entry $entry)
-    {
-        $this->entry = $entry;
-
-        if (!$entry->getCurrentSteps()->contains($this)) {
-            $entry->getCurrentSteps()->add($this);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return integer
      */
     public function getActionId()
@@ -184,9 +152,9 @@ abstract class AbstractStep implements StepInterface
      *
      * @return $this
      */
-    public function setActionId($actionId)
+    public function setActionId($actionId = null)
     {
-        $this->actionId = (integer)$actionId;
+        $this->actionId = null !== $actionId ? (integer)$actionId : $actionId;
 
         return $this;
     }
@@ -204,9 +172,9 @@ abstract class AbstractStep implements StepInterface
      *
      * @return $this
      */
-    public function setCaller($caller)
+    public function setCaller($caller = null)
     {
-        $this->caller = (string)$caller;
+        $this->caller = null !== $caller ? (string)$caller : $caller;
 
         return $this;
     }
@@ -264,7 +232,7 @@ abstract class AbstractStep implements StepInterface
      *
      * @return $this
      */
-    public function setDueDate(DateTime $dueDate)
+    public function setDueDate(DateTime $dueDate = null)
     {
         $this->dueDate = $dueDate;
 
@@ -332,6 +300,11 @@ abstract class AbstractStep implements StepInterface
     }
 
     /**
+     * @return Entry
+     */
+    abstract public function getEntry();
+
+    /**
      * Возвращает id процесса
      *
      * @return integer
@@ -350,7 +323,7 @@ abstract class AbstractStep implements StepInterface
         $previousStepIds = [];
         $previousSteps = $this->getPreviousSteps();
 
-        foreach($previousSteps as $previousStep) {
+        foreach ($previousSteps as $previousStep) {
             $id = $previousStep->getId();
             $previousStepIds[$id] = $id;
         }
@@ -385,9 +358,10 @@ abstract class AbstractStep implements StepInterface
                 $errMsg = sprintf('step not implement %s', AbstractStep::class);
                 throw new Exception\InvalidArgumentException($errMsg);
             }
-            $this->previousSteps->add($previousStep);
+            if (!$this->previousSteps->contains($previousStep)) {
+                $this->previousSteps->add($previousStep);
+            }
         }
         return $this;
     }
-
 }

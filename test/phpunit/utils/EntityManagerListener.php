@@ -25,7 +25,6 @@ use Doctrine\DBAL\DriverManager;
  */
 class  EntityManagerListener implements PHPUnit_Framework_TestListener
 {
-
     /**
      *
      * @var string
@@ -125,7 +124,7 @@ class  EntityManagerListener implements PHPUnit_Framework_TestListener
      * @throws \Doctrine\ORM\ORMException
      * @throws \InvalidArgumentException
      */
-    public function  getEntityManager()
+    public function getEntityManager()
     {
         $cache = new ArrayCache();
         $config = new Configuration();
@@ -163,5 +162,4 @@ class  EntityManagerListener implements PHPUnit_Framework_TestListener
     public function endTest(PHPUnit_Framework_Test $test, $time)
     {
     }
-
 }

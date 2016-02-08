@@ -7,6 +7,8 @@ namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Test\Entity;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use OldTown\Workflow\Spi\Doctrine\Entity\Entry;
+use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep;
+use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStep;
 
 /**
  * Class DoctrineWorkflowStoryFunctionalTest
@@ -65,5 +67,38 @@ class EntryTest extends TestCase
 
         $this->entry->setState(Entry::ACTIVATED);
         static::assertEquals(true, $this->entry->isInitialized());
+    }
+
+    /**
+     * Работа с текущими шагами
+     */
+    public function testCurrentStep()
+    {
+        /** @var CurrentStep $currentStep */
+        $currentStep = $this->getMock(CurrentStep::class);
+
+        static::assertEquals($this->entry, $this->entry->addCurrentStep($currentStep));
+        static::assertEquals($this->entry, $this->entry->addCurrentStep($currentStep));
+        static::assertEquals($this->entry, $this->entry->addCurrentStep($currentStep));
+
+        static::assertEquals($currentStep, $this->entry->getCurrentSteps()->current());
+        static::assertCount(1, $this->entry->getCurrentSteps());
+    }
+
+
+    /**
+     * Работа с шагами истории
+     */
+    public function testHistorySteps()
+    {
+        /** @var HistoryStep $historyStep */
+        $historyStep = $this->getMock(HistoryStep::class, [], [], '', false);
+
+        static::assertEquals($this->entry, $this->entry->addHistoryStep($historyStep));
+        static::assertEquals($this->entry, $this->entry->addHistoryStep($historyStep));
+        static::assertEquals($this->entry, $this->entry->addHistoryStep($historyStep));
+
+        static::assertEquals($historyStep, $this->entry->getHistorySteps()->current());
+        static::assertCount(1, $this->entry->getHistorySteps());
     }
 }

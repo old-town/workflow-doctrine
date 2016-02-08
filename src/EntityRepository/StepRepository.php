@@ -10,7 +10,6 @@ use \OldTown\Workflow\Spi\Doctrine\Entity\AbstractStep;
 
 class StepRepository extends EntityRepository
 {
-
     /**
      * @param array $listId
      *

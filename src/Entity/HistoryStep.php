@@ -17,6 +17,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class HistoryStep extends AbstractStep
 {
+    /**
+     * @ORM\ManyToOne(targetEntity="Entry", inversedBy="historySteps")
+     * @ORM\JoinColumn(name="entry_id", referencedColumnName="id")
+     *
+     * @var Entry
+     *
+     */
+    protected $entry;
 
     /**
      * @param CurrentStep $step
@@ -38,7 +46,29 @@ class HistoryStep extends AbstractStep
         $this->setStartDate($step->getStartDate());
         $this->setStepId($step->getStepId());
         $this->setPreviousSteps($step->getPreviousSteps());
-
     }
 
+    /**
+     * @return Entry
+     */
+    public function getEntry()
+    {
+        return $this->entry;
+    }
+
+    /**
+     * @param Entry $entry
+     *
+     * @return $this
+     */
+    public function setEntry(Entry $entry)
+    {
+        $this->entry = $entry;
+
+        if (!$entry->getHistorySteps()->contains($this)) {
+            $entry->getHistorySteps()->add($this);
+        }
+
+        return $this;
+    }
 }

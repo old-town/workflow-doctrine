@@ -5,7 +5,7 @@
  */
 namespace OldTown\Workflow\Spi\Doctrine\Entity\Exception;
 
-use  OldTown\Workflow\Spi\Doctrine\Exception\InvalidArgumentException as Exception;
+use OldTown\Workflow\Spi\Doctrine\Exception\InvalidArgumentException as Exception;
 
 /**
  * Class InvalidArgumentException

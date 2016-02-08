@@ -7,7 +7,6 @@ namespace OldTown\Workflow\Spi\Doctrine\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-
 use OldTown\Workflow\Spi\WorkflowEntryInterface;
 
 /**
@@ -47,11 +46,21 @@ class Entry implements WorkflowEntryInterface
     protected $state;
 
     /**
-     * @ORM\OneToMany(targetEntity="AbstractStep", mappedBy="entry")
+     * @ORM\OneToMany(targetEntity="CurrentStep", mappedBy="entry")
      *
      * @var CurrentStep[]|ArrayCollection
      */
     protected $currentSteps;
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="HistoryStep", mappedBy="entry")
+     * @ORM\OrderBy({"finishDate"="ASC"})
+     *
+     * @var HistoryStep[]|ArrayCollection
+     */
+    protected $historySteps;
+
 
     /**
      *
@@ -59,6 +68,7 @@ class Entry implements WorkflowEntryInterface
     public function __construct()
     {
         $this->currentSteps = new ArrayCollection();
+        $this->historySteps = new ArrayCollection();
     }
 
     /**
@@ -144,16 +154,39 @@ class Entry implements WorkflowEntryInterface
      *
      * @return $this
      */
-    public function addCurrentSteps(CurrentStep $currentStep)
+    public function addCurrentStep(CurrentStep $currentStep)
     {
         $currentStep->setEntry($this);
         if (!$this->getCurrentSteps()->contains($currentStep)) {
             $this->getCurrentSteps()->add($currentStep);
         }
 
+
         return $this;
     }
 
 
 
+    /**
+     * @return ArrayCollection|HistoryStep[]
+     */
+    public function getHistorySteps()
+    {
+        return $this->historySteps;
+    }
+
+    /**
+     * @param HistoryStep $historyStep
+     *
+     * @return $this
+     */
+    public function addHistoryStep(HistoryStep $historyStep)
+    {
+        $historyStep->setEntry($this);
+        if (!$this->getHistorySteps()->contains($historyStep)) {
+            $this->getHistorySteps()->add($historyStep);
+        }
+
+        return $this;
+    }
 }

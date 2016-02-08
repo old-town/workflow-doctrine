@@ -5,7 +5,7 @@
  */
 namespace OldTown\Workflow\Spi\Doctrine\EntityRepository\Exception;
 
-use  OldTown\Workflow\Spi\Doctrine\Exception\RuntimeException as Exception;
+use OldTown\Workflow\Spi\Doctrine\Exception\RuntimeException as Exception;
 
 /**
  * Class RuntimeException
