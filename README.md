@@ -7,11 +7,13 @@
 
 Обсуждение проблем https://github.com/old-town/workflow-doctrine/issues
 
-Реализаця хранилища - [\OldTown\Workflow\Spi\Doctrine\DoctrineWorkflowStory](./src/DoctrineWorkflowStory.php).
+Реализаця хранилища - [DoctrineWorkflowStory](./src/DoctrineWorkflowStory.php).
 
 Пример инициализации:
 
 ```php
+    use \OldTown\Workflow\Spi\Doctrine\DoctrineWorkflowStory;
+
     $doctrineWorkflowStory = new DoctrineWorkflowStory();
     $doctrineWorkflowStory->init([
         DoctrineWorkflowStory::ENTITY_MANAGER_FACTORY => [
@@ -24,3 +26,10 @@
 
 
 ```
+
+Хранилище для работы, должно получить инициализированный и настроенный экземпляр \Doctrine\ORM\EntityManagerInterface.
+Получение менеджера сущностей доктрины делегированно фабрике которая должна реализовывать интерфейс [EntityManagerFactoryInterface](./src/EntityManagerFactory/EntityManagerFactoryInterface).
+
+В модуль входит [SimpleEntityManagerFactory](./src/EntityManagerFactory/SimpleEntityManagerFactory) - простая фабрика,
+позволяющая заранее установить менеджер сущностей доктрины. 
+
