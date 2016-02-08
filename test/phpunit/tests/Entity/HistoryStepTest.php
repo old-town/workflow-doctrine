@@ -18,7 +18,7 @@ use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStep;
 class HistoryStepTest extends TestCase
 {
     /**
-     * Проверка установки/получения id
+     * Проверка установки сущности entry
      */
     public function testSetEntry()
     {
@@ -36,5 +36,21 @@ class HistoryStepTest extends TestCase
 
         static::assertCount(1, $entry->getHistorySteps());
         static::assertEquals($historyStep, $entry->getHistorySteps()->current());
+    }
+
+    /**
+     * Проверка получения сущности entry
+     */
+    public function testGetEntry()
+    {
+        $entry = new Entry();
+
+        $step = new CurrentStep();
+        $step->setStartDate(new \DateTime());
+
+        $step->setEntry($entry);
+        $historyStep = new HistoryStep($step);
+
+        static::assertEquals($entry, $historyStep->getEntry());
     }
 }

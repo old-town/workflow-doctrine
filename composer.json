@@ -25,12 +25,17 @@
     {
       "type": "vcs",
       "url": "git@github.com:old-town/old-town-log.git"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:old-town/old-town-propertyset.git"
     }
   ],
   "require": {
     "php": ">=5.5",
     "old-town/workflow": "dev-dev",
-    "doctrine/orm": "2.5.*"
+    "doctrine/orm": "2.5.*",
+    "old-town/propertyset": "dev-dev"
   },
   "require-dev": {
     "ext-mbstring": "*",

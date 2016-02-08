@@ -6,6 +6,7 @@
 namespace OldTown\Workflow\Spi\Doctrine;
 
 use DateTime;
+use OldTown\PropertySet\PropertySetManager;
 use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStep;
 use ReflectionClass;
 use OldTown\Workflow\Query\WorkflowExpressionQuery;
@@ -357,40 +358,31 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
         return  $historySteps;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public function getPropertySet($entryId)
-    {
-        // TODO: Implement getPropertySet() method.
-    }
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * @todo Реализовать функционал
+     *
+     * @param WorkflowExpressionQuery $query
+     *
+     * @return array|void
+     *
+     * @throws Exception\RuntimeException
+     */
     public function query(WorkflowExpressionQuery $query)
     {
-        // TODO: Implement query() method.
+        $errMsg = sprintf('Method %s not supported', __METHOD__);
+        throw new Exception\RuntimeException($errMsg);
+    }
+
+    /**
+     * @todo Покрыть тестами и отрефакторить
+     *
+     * @param int $entryId
+     *
+     * @return \OldTown\PropertySet\PropertySetInterface
+     * @throws \OldTown\PropertySet\Exception\RuntimeException
+     */
+    public function getPropertySet($entryId)
+    {
+        return PropertySetManager::getInstance('memory');
     }
 }

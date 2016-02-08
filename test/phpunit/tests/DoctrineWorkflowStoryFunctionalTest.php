@@ -6,6 +6,7 @@
 namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Test;
 
 use Doctrine\ORM\PersistentCollection;
+use OldTown\Workflow\Query\WorkflowExpressionQuery;
 use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep;
 use OldTown\Workflow\Spi\Doctrine\EntityManagerFactory\SimpleEntityManagerFactory;
 use OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils\EntityManagerAwareTrait;
@@ -305,6 +306,20 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
     }
 
     /**
+     * Перенос шага в архив. Попытка передать historyStep в качестве аргумента
+     *
+     * @expectedException \OldTown\Workflow\Spi\Doctrine\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Step not implement OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep
+     */
+    public function testMoveToHistoryInvalidStep()
+    {
+        /** @var HistoryStep  $historyStep */
+        $historyStep = $this->getMock(HistoryStep::class, [], [], '', false);
+
+        $this->doctrineWorkflowStory->moveToHistory($historyStep);
+    }
+
+    /**
      * Тестирование получения уже пройденных шагов
      *
      * Также проверяетя сортировка
@@ -375,5 +390,16 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         static::assertEquals($step3->getStepId(), $historySteps->current()->getStepId());
         $historySteps->next();
         static::assertEquals($step1->getStepId(), $historySteps->current()->getStepId());
+    }
+
+    /**
+     * @expectedException \OldTown\Workflow\Spi\Doctrine\Exception\RuntimeException
+     * @expectedExceptionMessage Method OldTown\Workflow\Spi\Doctrine\DoctrineWorkflowStory::query not supported
+     */
+    public function testQuery()
+    {
+        /** @var WorkflowExpressionQuery $query */
+        $query = $this->getMock(WorkflowExpressionQuery::class);
+        $this->doctrineWorkflowStory->query($query);
     }
 }
