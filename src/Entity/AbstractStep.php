@@ -83,7 +83,7 @@ abstract class AbstractStep implements StepInterface
     protected $owner;
 
     /**
-     * @ORM\Column(name="$status", type="string", length=40, nullable=true)
+     * @ORM\Column(name="status", type="string", length=40, nullable=true)
      *
      * @var string
      */
