@@ -213,7 +213,7 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
      * @throws \OldTown\Workflow\Spi\Doctrine\EntityRepository\Exception\RuntimeException
      * @throws \OldTown\Workflow\Spi\Doctrine\Entity\Exception\InvalidArgumentException
      */
-    public function createCurrentStep($entryId, $stepId, $owner, DateTime $startDate, DateTime $dueDate, $status, array $previousIds = [])
+    public function createCurrentStep($entryId, $stepId, $owner = null, DateTime $startDate, DateTime $dueDate = null, $status, array $previousIds = [])
     {
         $em = $this->getEntityManager();
 

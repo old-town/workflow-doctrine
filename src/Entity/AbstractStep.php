@@ -254,7 +254,7 @@ abstract class AbstractStep implements StepInterface
      */
     public function setOwner($owner)
     {
-        $this->owner = (string)$owner;
+        $this->owner = null !== $owner ? (string)$owner : $owner;
 
         return $this;
     }
