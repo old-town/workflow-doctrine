@@ -18,14 +18,38 @@ use OldTown\Workflow\Spi\WorkflowEntryInterface;
 use OldTown\Workflow\Spi\Doctrine\Entity\Entry;
 use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep;
 use OldTown\Workflow\Spi\Doctrine\EntityRepository\StepRepository;
+use OldTown\Workflow\Spi\Doctrine\Entity\EntryInterface;
+use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStepInterface;
+use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStepInterface;
 
 /**
  * Class DoctrineWorkflowStory
  *
  * @package OldTown\Workflow\Spi\Doctrine
  */
-class DoctrineWorkflowStory implements  WorkflowStoreInterface
+class DoctrineWorkflowStory implements WorkflowStoreInterface
 {
+    /**
+     * Ключ по котормоу можно получить настройки для работы с фабрикой создающей менеджер сущностей
+     *
+     * @var string
+     */
+    const ENTITY_MANAGER_FACTORY = 'entityManagerFactory';
+
+    /**
+     * Ключ по котормоу можно получить имя класса фабрика создающей менеджер сущностей
+     *
+     * @var string
+     */
+    const ENTITY_MANAGER_FACTORY_NAME = 'name';
+
+    /**
+     * Ключ по котормоу можно получить параметры для создания менеджера сущностей
+     *
+     * @var string
+     */
+    const ENTITY_MANAGER_FACTORY_OPTIONS = 'options';
+
     /**
      * @var EntityManagerInterface
      */
@@ -47,25 +71,14 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
     protected $entityManagerFactoryOptions = [];
 
     /**
-     * Ключ по котормоу можно получить настройки для работы с фабрикой создающей менеджер сущностей
-     *
-     * @var string
+     * @var array
      */
-    const ENTITY_MANAGER_FACTORY = 'entityManagerFactory';
+    protected $entityMap = [
+        'entry'       => Entry::class,
+        'currentStep' => CurrentStep::class,
+        'historyStep' => HistoryStep::class,
 
-    /**
-     * Ключ по котормоу можно получить имя класса фабрика создающей менеджер сущностей
-     *
-     * @var string
-     */
-    const ENTITY_MANAGER_FACTORY_NAME = 'name';
-
-    /**
-     * Ключ по котормоу можно получить параметры для создания менеджера сущностей
-     *
-     * @var string
-     */
-    const ENTITY_MANAGER_FACTORY_OPTIONS = 'options';
+    ];
 
     /**
      * Инициализация хранилища
@@ -165,10 +178,15 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
      * @return WorkflowEntryInterface
      *
      * @throws Exception\DoctrineRuntimeException
+     * @throws  Exception\InvalidArgumentException
      */
     public function createEntry($workflowName)
     {
-        $workflowEntry = new Entry();
+        $entryClassName = $this->getEntityClassName('entry');
+
+        $r = new ReflectionClass($entryClassName);
+
+        $workflowEntry = $r->newInstance();
         $workflowEntry->setWorkflowName($workflowName);
         $workflowEntry->setState(WorkflowEntryInterface::CREATED);
 
@@ -184,13 +202,16 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
      * @param int $state
      *
      * @throws Exception\DoctrineRuntimeException
+     * @throws Exception\InvalidArgumentException
      */
     public function setEntryState($entryId, $state)
     {
         $em = $this->getEntityManager();
 
-        /** @var Entry $entry */
-        $entry = $em->getRepository(Entry::class)->find($entryId);
+        $entryClassName = $this->getEntityClassName('entry');
+
+        /** @var EntryInterface $entry */
+        $entry = $em->getRepository($entryClassName)->find($entryId);
         $entry->setState($state);
 
         $em->flush();
@@ -212,15 +233,22 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
      * @throws Exception\DoctrineRuntimeException
      * @throws \OldTown\Workflow\Spi\Doctrine\EntityRepository\Exception\RuntimeException
      * @throws \OldTown\Workflow\Spi\Doctrine\Entity\Exception\InvalidArgumentException
+     * @throws  Exception\InvalidArgumentException
      */
     public function createCurrentStep($entryId, $stepId, $owner = null, DateTime $startDate, DateTime $dueDate = null, $status, array $previousIds = [])
     {
         $em = $this->getEntityManager();
 
-        /** @var Entry $entry */
-        $entry = $em->getRepository(Entry::class)->find($entryId);
+        $entryClassName = $this->getEntityClassName('entry');
 
-        $currentStep = new CurrentStep();
+        /** @var EntryInterface $entry */
+        $entry = $em->getRepository($entryClassName)->find($entryId);
+
+        $currentStepClassName = $this->getEntityClassName('currentStep');
+        $r = new ReflectionClass($currentStepClassName);
+
+        /** @var CurrentStepInterface $currentStep */
+        $currentStep = $r->newInstance($currentStepClassName);
         $currentStep->setEntry($entry);
         $currentStep->setStepId($stepId);
         $currentStep->setOwner($owner);
@@ -237,47 +265,47 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
         $em->persist($currentStep);
         $em->flush();
 
-        $id = $currentStep->getId();
-
-        return $id;
+        return $currentStep->getId();
     }
 
     /**
      * @param int $entryId
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection|Entity\CurrentStep[]
+     * @return \Doctrine\Common\Collections\ArrayCollection|Entity\CurrentStepInterface[]
      *
      * @return StepInterface[]
      *
      * @throws Exception\DoctrineRuntimeException
+     * @throws Exception\InvalidArgumentException
      */
     public function findCurrentSteps($entryId)
     {
         $em = $this->getEntityManager();
 
-        /** @var Entry $entry */
-        $entry = $em->getRepository(Entry::class)->find($entryId);
+        $entryClassName = $this->getEntityClassName('entry');
 
-        $currentSteps = $entry->getCurrentSteps()->toArray();
+        /** @var EntryInterface $entry */
+        $entry = $em->getRepository($entryClassName)->find($entryId);
 
-        return $currentSteps;
+        return $entry->getCurrentSteps()->toArray();
     }
 
 
     /**
      * @param integer $entryId
+     *
      * @return WorkflowEntryInterface
      *
      * @throws Exception\DoctrineRuntimeException
+     * @throws Exception\InvalidArgumentException
      */
     public function findEntry($entryId)
     {
         $em = $this->getEntityManager();
 
-        /** @var Entry $entry */
-        $entry = $em->getRepository(Entry::class)->find($entryId);
+        $entryClassName = $this->getEntityClassName('entry');
 
-        return $entry;
+        return $em->getRepository($entryClassName)->find($entryId);
     }
 
     /**
@@ -322,14 +350,19 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
      */
     public function moveToHistory(StepInterface $step)
     {
-        if (!$step instanceof CurrentStep) {
-            $errMsg = sprintf('Step not implement %s', CurrentStep::class);
+        if (!$step instanceof CurrentStepInterface) {
+            $errMsg = sprintf('Step not implement %s', CurrentStepInterface::class);
             throw new Exception\InvalidArgumentException($errMsg);
         }
         $entry = $step->getEntry();
 
         $entry->getCurrentSteps()->removeElement($step);
-        $historyStep = new HistoryStep($step);
+
+        $historyStepClassName = $this->getEntityClassName('historyStep');
+
+        $r = new ReflectionClass($historyStepClassName);
+        /** @var HistoryStepInterface $historyStep */
+        $historyStep = $r->newInstance();
         $entry->addHistoryStep($historyStep);
 
         $em = $this->getEntityManager();
@@ -346,16 +379,18 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
      * @return \OldTown\Workflow\Spi\StepInterface[]|\Doctrine\ORM\PersistentCollection|void
      *
      * @throws \OldTown\Workflow\Spi\Doctrine\Exception\DoctrineRuntimeException
+     * @throws Exception\InvalidArgumentException
      */
     public function findHistorySteps($entryId)
     {
         $em = $this->getEntityManager();
 
-        /** @var Entry $entry */
-        $entry = $em->getRepository(Entry::class)->find($entryId);
-        $historySteps = $entry->getHistorySteps();
+        $entryClassName = $this->getEntityClassName('entry');
 
-        return  $historySteps;
+        /** @var EntryInterface $entry */
+        $entry = $em->getRepository($entryClassName)->find($entryId);
+
+        return $entry->getHistorySteps();
     }
 
     /**
@@ -384,5 +419,37 @@ class DoctrineWorkflowStory implements  WorkflowStoreInterface
     public function getPropertySet($entryId)
     {
         return PropertySetManager::getInstance('memory');
+    }
+
+    /**
+     * Получение сущности по ее псевдониму
+     *
+     * @param $alias
+     *
+     * @return mixed
+     *
+     * @throws  Exception\InvalidArgumentException
+     */
+    public function getEntityClassName($alias)
+    {
+        if (array_key_exists($alias, $this->entityMap)) {
+            return $this->entityMap[$alias];
+        }
+
+        $errMsg = sprintf('Invalid entity name: %s', $alias);
+        throw new Exception\InvalidArgumentException($errMsg);
+    }
+
+    /**
+     * @param $alias
+     * @param $className
+     *
+     * @return $this
+     */
+    public function setEntityClassName($alias, $className)
+    {
+        $this->entityMap[$alias] = $className;
+
+        return $this;
     }
 }

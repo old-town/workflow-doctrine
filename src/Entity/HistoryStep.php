@@ -15,23 +15,23 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity(repositoryClass="\OldTown\Workflow\Spi\Doctrine\EntityRepository\StepRepository")
  */
-class HistoryStep extends AbstractStep
+class HistoryStep extends AbstractStep implements HistoryStepInterface
 {
     /**
      * @ORM\ManyToOne(targetEntity="Entry", inversedBy="historySteps")
      * @ORM\JoinColumn(name="entry_id", referencedColumnName="id")
      *
-     * @var Entry
+     * @var EntryInterface
      *
      */
     protected $entry;
 
     /**
-     * @param CurrentStep $step
+     * @param CurrentStepInterface $step
      *
      * @throws Exception\InvalidArgumentException
      */
-    public function __construct(CurrentStep $step)
+    public function __construct(CurrentStepInterface $step)
     {
         parent::__construct();
 
@@ -49,7 +49,7 @@ class HistoryStep extends AbstractStep
     }
 
     /**
-     * @return Entry
+     * @return EntryInterface
      */
     public function getEntry()
     {
@@ -57,11 +57,11 @@ class HistoryStep extends AbstractStep
     }
 
     /**
-     * @param Entry $entry
+     * @param EntryInterface $entry
      *
      * @return $this
      */
-    public function setEntry(Entry $entry)
+    public function setEntry(EntryInterface $entry)
     {
         $this->entry = $entry;
 

@@ -150,9 +150,7 @@ class  EntityManagerListener implements PHPUnit_Framework_TestListener
 
         $conn = DriverManager::getConnection($conf);
 
-        $em = EntityManager::create($conn, $config);
-
-        return $em;
+        return EntityManager::create($conn, $config);
     }
 
 

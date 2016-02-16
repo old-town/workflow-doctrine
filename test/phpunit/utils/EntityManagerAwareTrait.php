@@ -50,7 +50,6 @@ trait EntityManagerAwareTrait
      */
     public function hasEntityManager()
     {
-        $flag = $this->entityManager instanceof EntityManager;
-        return $flag;
+        return$this->entityManager instanceof EntityManager;
     }
 }

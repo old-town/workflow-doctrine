@@ -8,7 +8,6 @@ namespace OldTown\Workflow\Spi\Doctrine\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
-use OldTown\Workflow\Spi\StepInterface;
 use Traversable;
 
 
@@ -300,7 +299,7 @@ abstract class AbstractStep implements StepInterface
     }
 
     /**
-     * @return Entry
+     * @return EntryInterface
      */
     abstract public function getEntry();
 

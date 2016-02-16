@@ -15,18 +15,18 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity(repositoryClass="\OldTown\Workflow\Spi\Doctrine\EntityRepository\StepRepository")
  */
-class CurrentStep extends AbstractStep
+class CurrentStep extends AbstractStep implements CurrentStepInterface
 {
     /**
      * @ORM\ManyToOne(targetEntity="Entry", inversedBy="currentSteps")
      * @ORM\JoinColumn(name="entry_id", referencedColumnName="id")
      *
-     * @var Entry
+     * @var EntryInterface
      */
     protected $entry;
 
     /**
-     * @return Entry
+     * @return EntryInterface
      */
     public function getEntry()
     {
@@ -34,11 +34,11 @@ class CurrentStep extends AbstractStep
     }
 
     /**
-     * @param Entry $entry
+     * @param EntryInterface $entry
      *
      * @return $this
      */
-    public function setEntry(Entry $entry)
+    public function setEntry(EntryInterface $entry)
     {
         $this->entry = $entry;
 

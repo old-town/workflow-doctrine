@@ -7,7 +7,7 @@ namespace OldTown\Workflow\Spi\Doctrine\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use OldTown\Workflow\Spi\WorkflowEntryInterface;
+
 
 /**
  * Class WorkflowName
@@ -17,7 +17,7 @@ use OldTown\Workflow\Spi\WorkflowEntryInterface;
  *
  * @package OldTown\Workflow\Spi\Doctrine
  */
-class Entry implements WorkflowEntryInterface
+class Entry implements EntryInterface
 {
     /**
      * @ORM\Id()
@@ -48,7 +48,7 @@ class Entry implements WorkflowEntryInterface
     /**
      * @ORM\OneToMany(targetEntity="CurrentStep", mappedBy="entry")
      *
-     * @var CurrentStep[]|ArrayCollection
+     * @var CurrentStepInterface[]|ArrayCollection
      */
     protected $currentSteps;
 
@@ -57,7 +57,7 @@ class Entry implements WorkflowEntryInterface
      * @ORM\OneToMany(targetEntity="HistoryStep", mappedBy="entry")
      * @ORM\OrderBy({"finishDate"="ASC"})
      *
-     * @var HistoryStep[]|ArrayCollection
+     * @var HistoryStepInterface[]|ArrayCollection
      */
     protected $historySteps;
 
@@ -142,7 +142,7 @@ class Entry implements WorkflowEntryInterface
     }
 
     /**
-     * @return ArrayCollection|CurrentStep[]
+     * @return ArrayCollection|CurrentStepInterface[]
      */
     public function getCurrentSteps()
     {
@@ -150,11 +150,11 @@ class Entry implements WorkflowEntryInterface
     }
 
     /**
-     * @param CurrentStep $currentStep
+     * @param CurrentStepInterface $currentStep
      *
      * @return $this
      */
-    public function addCurrentStep(CurrentStep $currentStep)
+    public function addCurrentStep(CurrentStepInterface $currentStep)
     {
         $currentStep->setEntry($this);
         if (!$this->getCurrentSteps()->contains($currentStep)) {
@@ -168,7 +168,7 @@ class Entry implements WorkflowEntryInterface
 
 
     /**
-     * @return ArrayCollection|HistoryStep[]
+     * @return ArrayCollection|HistoryStepInterface[]
      */
     public function getHistorySteps()
     {
@@ -176,11 +176,11 @@ class Entry implements WorkflowEntryInterface
     }
 
     /**
-     * @param HistoryStep $historyStep
+     * @param HistoryStepInterface $historyStep
      *
      * @return $this
      */
-    public function addHistoryStep(HistoryStep $historyStep)
+    public function addHistoryStep(HistoryStepInterface $historyStep)
     {
         $historyStep->setEntry($this);
         if (!$this->getHistorySteps()->contains($historyStep)) {
