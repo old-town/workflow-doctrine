@@ -7,7 +7,7 @@ namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Test\Entity;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use OldTown\Workflow\Spi\Doctrine\Entity\AbstractStep;
-use OldTown\Workflow\Spi\Doctrine\Entity\Entry;
+use OldTown\Workflow\Spi\Doctrine\Entity\DefaultEntry;
 
 /**
  * Class AbstractStepTest
@@ -139,7 +139,7 @@ class AbstractStepTest extends TestCase
 
         $expected = -7;
 
-        $entry = new Entry();
+        $entry = new DefaultEntry();
         $entry->setId($expected);
 
         $step->expects(static::once())->method('getEntry')->will(static::returnValue($entry));

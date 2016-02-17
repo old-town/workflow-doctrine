@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 class HistoryStep extends AbstractStep implements HistoryStepInterface
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Entry", inversedBy="historySteps")
+     * @ORM\ManyToOne(targetEntity="AbstractEntry", inversedBy="historySteps")
      * @ORM\JoinColumn(name="entry_id", referencedColumnName="id")
      *
      * @var EntryInterface

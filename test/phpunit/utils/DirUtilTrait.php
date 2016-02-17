@@ -37,6 +37,8 @@ trait DirUtilTrait
      * @param       $basePath
      *
      * @return string
+     *
+     * @throws \RuntimeException
      */
     protected function setUpTestDir(array $files = [], $basePath)
     {
@@ -47,7 +49,11 @@ trait DirUtilTrait
 
         $this->pathToTestTmpDir = $testDir = $pathToTmp . DIRECTORY_SEPARATOR . Uuid::uuid4()->toString();
 
-        mkdir($testDir);
+        if (!@mkdir($testDir) && !is_dir($testDir)) {
+            $errMsg = sprintf('Error create dir: %s', $testDir);
+            throw new \RuntimeException($errMsg);
+        }
+
         foreach ($files as $file) {
             $from = $basePath . DIRECTORY_SEPARATOR . $file;
             $to = $testDir . DIRECTORY_SEPARATOR . $file;

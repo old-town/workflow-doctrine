@@ -7,7 +7,7 @@ namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Test\Entity;
 
 use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep;
 use PHPUnit_Framework_TestCase as TestCase;
-use OldTown\Workflow\Spi\Doctrine\Entity\Entry;
+use OldTown\Workflow\Spi\Doctrine\Entity\DefaultEntry;
 use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStep;
 
 /**
@@ -22,7 +22,7 @@ class HistoryStepTest extends TestCase
      */
     public function testSetEntry()
     {
-        $entry = new Entry();
+        $entry = new DefaultEntry();
 
         $step = new CurrentStep();
         $step->setStartDate(new \DateTime());
@@ -43,7 +43,7 @@ class HistoryStepTest extends TestCase
      */
     public function testGetEntry()
     {
-        $entry = new Entry();
+        $entry = new DefaultEntry();
 
         $step = new CurrentStep();
         $step->setStartDate(new \DateTime());

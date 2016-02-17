@@ -5,8 +5,9 @@
  */
 namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Test\Entity;
 
+use OldTown\Workflow\Spi\Doctrine\Entity\EntryInterface;
 use PHPUnit_Framework_TestCase as TestCase;
-use OldTown\Workflow\Spi\Doctrine\Entity\Entry;
+use OldTown\Workflow\Spi\Doctrine\Entity\DefaultEntry;
 use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep;
 use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStep;
 
@@ -18,7 +19,7 @@ use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStep;
 class EntryTest extends TestCase
 {
     /**
-     * @var Entry
+     * @var EntryInterface
      */
     protected $entry;
 
@@ -27,7 +28,7 @@ class EntryTest extends TestCase
      */
     protected function setUp()
     {
-        $this->entry = new Entry();
+        $this->entry = new DefaultEntry();
     }
 
     /**
@@ -62,10 +63,10 @@ class EntryTest extends TestCase
      */
     public function testIsInitialized()
     {
-        $this->entry->setState(Entry::CREATED);
+        $this->entry->setState(DefaultEntry::CREATED);
         static::assertEquals(false, $this->entry->isInitialized());
 
-        $this->entry->setState(Entry::ACTIVATED);
+        $this->entry->setState(DefaultEntry::ACTIVATED);
         static::assertEquals(true, $this->entry->isInitialized());
     }
 

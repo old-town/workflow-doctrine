@@ -15,7 +15,7 @@ use OldTown\Workflow\Spi\WorkflowStoreInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use OldTown\Workflow\Spi\Doctrine\EntityManagerFactory\EntityManagerFactoryInterface;
 use OldTown\Workflow\Spi\WorkflowEntryInterface;
-use OldTown\Workflow\Spi\Doctrine\Entity\Entry;
+use OldTown\Workflow\Spi\Doctrine\Entity\DefaultEntry;
 use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep;
 use OldTown\Workflow\Spi\Doctrine\EntityRepository\StepRepository;
 use OldTown\Workflow\Spi\Doctrine\Entity\EntryInterface;
@@ -74,7 +74,7 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
      * @var array
      */
     protected $entityMap = [
-        'entry'       => Entry::class,
+        'entry'       => DefaultEntry::class,
         'currentStep' => CurrentStep::class,
         'historyStep' => HistoryStep::class,
 
@@ -362,7 +362,7 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
 
         $r = new ReflectionClass($historyStepClassName);
         /** @var HistoryStepInterface $historyStep */
-        $historyStep = $r->newInstance();
+        $historyStep = $r->newInstance($step);
         $entry->addHistoryStep($historyStep);
 
         $em = $this->getEntityManager();

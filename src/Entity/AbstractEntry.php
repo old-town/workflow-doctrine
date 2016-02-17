@@ -14,10 +14,12 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity()
  * @ORM\Table(name="wf_entry")
+ * @ORM\InheritanceType(value="SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="string")
  *
  * @package OldTown\Workflow\Spi\Doctrine
  */
-class Entry implements EntryInterface
+abstract class AbstractEntry implements EntryInterface
 {
     /**
      * @ORM\Id()

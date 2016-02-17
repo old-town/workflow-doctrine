@@ -6,7 +6,7 @@
 namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Test\Entity;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use OldTown\Workflow\Spi\Doctrine\Entity\Entry;
+use OldTown\Workflow\Spi\Doctrine\Entity\DefaultEntry;
 use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep;
 
 /**
@@ -21,7 +21,7 @@ class CurrentStepTest extends TestCase
      */
     public function testSetEntry()
     {
-        $entry = new Entry();
+        $entry = new DefaultEntry();
 
         $step = new CurrentStep();
 

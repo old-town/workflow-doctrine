@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 class CurrentStep extends AbstractStep implements CurrentStepInterface
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Entry", inversedBy="currentSteps")
+     * @ORM\ManyToOne(targetEntity="AbstractEntry", inversedBy="currentSteps")
      * @ORM\JoinColumn(name="entry_id", referencedColumnName="id")
      *
      * @var EntryInterface

@@ -8,6 +8,7 @@ namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Test;
 use Doctrine\ORM\PersistentCollection;
 use OldTown\Workflow\Query\WorkflowExpressionQuery;
 use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep;
+use OldTown\Workflow\Spi\Doctrine\Entity\EntryInterface;
 use OldTown\Workflow\Spi\Doctrine\EntityManagerFactory\SimpleEntityManagerFactory;
 use OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils\EntityManagerAwareTrait;
 use OldTown\Workflow\Spi\StepInterface;
@@ -17,7 +18,7 @@ use OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils\DirUtilTrait;
 use OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils\EntityManagerAwareInterface;
 use OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils\DbTrait;
 use OldTown\Workflow\Spi\Doctrine\DoctrineWorkflowStory;
-use OldTown\Workflow\Spi\Doctrine\Entity\Entry;
+use OldTown\Workflow\Spi\Doctrine\Entity\DefaultEntry;
 use DateTime;
 use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStep;
 use OldTown\Workflow\Spi\Doctrine\EntityRepository\StepRepository;
@@ -75,10 +76,10 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
 
         $this->doctrineWorkflowStory->getEntityManager()->clear();
 
-        $results = $this->doctrineWorkflowStory->getEntityManager()->getRepository(Entry::class)->findAll();
+        $results = $this->doctrineWorkflowStory->getEntityManager()->getRepository(DefaultEntry::class)->findAll();
 
         static::assertCount(1, $results);
-        /** @var Entry $actualEntry */
+        /** @var EntryInterface $actualEntry */
         $actualEntry = array_pop($results);
 
         static::assertEquals($entry->getId(), $actualEntry->getId());
@@ -101,8 +102,8 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         $this->doctrineWorkflowStory->setEntryState($wfEntry->getId(), -7);
         $this->doctrineWorkflowStory->getEntityManager()->clear();
 
-        /** @var Entry $entry */
-        $entry = $this->doctrineWorkflowStory->getEntityManager()->getRepository(Entry::class)->find($wfEntry->getId());
+        /** @var EntryInterface $entry */
+        $entry = $this->doctrineWorkflowStory->getEntityManager()->getRepository(DefaultEntry::class)->find($wfEntry->getId());
 
         static::assertEquals(-7, $entry->getState());
     }
