@@ -21,6 +21,8 @@ use OldTown\Workflow\Spi\Doctrine\EntityRepository\StepRepository;
 use OldTown\Workflow\Spi\Doctrine\Entity\EntryInterface;
 use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStepInterface;
 use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStepInterface;
+use SplObjectStorage;
+use OldTown\Workflow\Spi\Doctrine\Entity\AbstractStep;
 
 /**
  * Class DoctrineWorkflowStory
@@ -258,7 +260,7 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
 
         if (count($previousIds) > 0) {
             /** @var StepRepository $previousStepRepository */
-            $previousStepRepository = $em->getRepository(CurrentStep::class);
+            $previousStepRepository = $em->getRepository(AbstractStep::class);
             $previousSteps = $previousStepRepository->findByIds($previousIds);
             $currentStep->setPreviousSteps($previousSteps);
         }
@@ -287,7 +289,13 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
         /** @var EntryInterface $entry */
         $entry = $em->getRepository($entryClassName)->find($entryId);
 
-        return $entry->getCurrentSteps()->toArray();
+        $currentSteps = $entry->getCurrentSteps();
+        $result = new SplObjectStorage();
+        foreach ($currentSteps as $currentStep) {
+            $result->attach($currentStep);
+        }
+
+        return $result;
     }
 
 

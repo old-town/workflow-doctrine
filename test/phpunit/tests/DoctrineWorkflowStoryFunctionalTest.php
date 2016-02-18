@@ -5,7 +5,6 @@
  */
 namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Test;
 
-use Doctrine\ORM\PersistentCollection;
 use OldTown\Workflow\Query\WorkflowExpressionQuery;
 use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep;
 use OldTown\Workflow\Spi\Doctrine\Entity\EntryInterface;
@@ -177,8 +176,12 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         $status = 'finish';
         $expectedCurrentSteps[] = $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $status);
 
-        /** @var PersistentCollection|array $currentStepsCollection */
-        $currentStepsCollection = $this->doctrineWorkflowStory->findCurrentSteps($entry->getId());
+        /** @var \SplObjectStorage $currentStepsCollectionStorage */
+        $currentStepsCollectionStorage = $this->doctrineWorkflowStory->findCurrentSteps($entry->getId());
+        $currentStepsCollection = [];
+        foreach ($currentStepsCollectionStorage as $item) {
+            $currentStepsCollection[] = $item;
+        }
 
         static::assertEquals([], array_diff($expectedCurrentSteps, array_map(function (StepInterface $step) {
             return $step->getId();
@@ -193,8 +196,12 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         $status = 'finish';
         $expectedCurrentSteps[] = $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $status);
 
-        /** @var PersistentCollection|array $currentStepsCollection */
-        $currentStepsCollection = $this->doctrineWorkflowStory->findCurrentSteps($entry->getId());
+        /** @var \SplObjectStorage $currentStepsCollectionStorage */
+        $currentStepsCollectionStorage = $this->doctrineWorkflowStory->findCurrentSteps($entry->getId());
+        $currentStepsCollection = [];
+        foreach ($currentStepsCollectionStorage as $item) {
+            $currentStepsCollection[] = $item;
+        }
 
         static::assertEquals([], array_diff($expectedCurrentSteps, array_map(function (StepInterface $step) {
             return $step->getId();

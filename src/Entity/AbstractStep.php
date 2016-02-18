@@ -16,7 +16,7 @@ use Traversable;
  *
  * @package OldTown\Workflow\Spi\Doctrine\Entity
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="\OldTown\Workflow\Spi\Doctrine\EntityRepository\StepRepository")
  * @ORM\Table(
  *     name="wf_step",
  *     indexes={
