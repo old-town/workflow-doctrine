@@ -33,3 +33,4 @@
 В модуль входит [SimpleEntityManagerFactory](./src/EntityManagerFactory/SimpleEntityManagerFactory.php) - простая фабрика,
 позволяющая заранее установить менеджер сущностей доктрины. 
 
+
