@@ -1,0 +1,7 @@
+docs_dir: doc/book/ru
+pages:
+    - index.md
+site_name: workflow-doctrine
+site_description: 'Сохранение состояния запущенного процесса workflow в doctrine'
+repo_url: 'https://github.com/old-town/workflow-doctrine'
+copyright: 'Copyright (c) 2016 <a href="https://github.com/old-town/">OldTown</a>'
