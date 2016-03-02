@@ -8,8 +8,8 @@ namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Test\Entity;
 use OldTown\Workflow\Spi\Doctrine\Entity\EntryInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use OldTown\Workflow\Spi\Doctrine\Entity\DefaultEntry;
-use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep;
-use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStep;
+use OldTown\Workflow\Spi\Doctrine\Entity\Step;
+
 
 /**
  * Class DoctrineWorkflowStoryFunctionalTest
@@ -71,35 +71,18 @@ class EntryTest extends TestCase
     }
 
     /**
-     * Работа с текущими шагами
+     * Работа с шагами
      */
-    public function testCurrentStep()
+    public function testStep()
     {
-        /** @var CurrentStep $currentStep */
-        $currentStep = $this->getMock(CurrentStep::class);
+        /** @var Step $currentStep */
+        $currentStep = $this->getMock(Step::class);
 
         static::assertEquals($this->entry, $this->entry->addCurrentStep($currentStep));
         static::assertEquals($this->entry, $this->entry->addCurrentStep($currentStep));
         static::assertEquals($this->entry, $this->entry->addCurrentStep($currentStep));
 
-        static::assertEquals($currentStep, $this->entry->getCurrentSteps()->current());
-        static::assertCount(1, $this->entry->getCurrentSteps());
-    }
-
-
-    /**
-     * Работа с шагами истории
-     */
-    public function testHistorySteps()
-    {
-        /** @var HistoryStep $historyStep */
-        $historyStep = $this->getMock(HistoryStep::class, [], [], '', false);
-
-        static::assertEquals($this->entry, $this->entry->addHistoryStep($historyStep));
-        static::assertEquals($this->entry, $this->entry->addHistoryStep($historyStep));
-        static::assertEquals($this->entry, $this->entry->addHistoryStep($historyStep));
-
-        static::assertEquals($historyStep, $this->entry->getHistorySteps()->current());
-        static::assertCount(1, $this->entry->getHistorySteps());
+        static::assertEquals($currentStep, $this->entry->getSteps()->current());
+        static::assertCount(1, $this->entry->getSteps());
     }
 }

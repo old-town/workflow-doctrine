@@ -36,28 +36,15 @@ interface EntryInterface extends WorkflowEntryInterface
      */
     public function setState($state);
 
-
     /**
-     * @return ArrayCollection|CurrentStepInterface[]
+     * @return ArrayCollection|StepInterface[]
      */
-    public function getCurrentSteps();
+    public function getSteps();
 
     /**
-     * @param CurrentStepInterface $currentStep
+     * @param StepInterface $step
      *
      * @return $this
      */
-    public function addCurrentStep(CurrentStepInterface $currentStep);
-
-    /**
-     * @return ArrayCollection|HistoryStepInterface[]
-     */
-    public function getHistorySteps();
-
-    /**
-     * @param HistoryStepInterface $historyStep
-     *
-     * @return $this
-     */
-    public function addHistoryStep(HistoryStepInterface $historyStep);
+    public function addCurrentStep(StepInterface $step);
 }

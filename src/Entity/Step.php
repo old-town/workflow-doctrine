@@ -21,14 +21,12 @@ use Traversable;
  *     name="wf_step",
  *     indexes={
  *         @ORM\Index(name="owner", columns={"owner"}),
- *         @ORM\Index(name="caller", columns={"caller"})
+ *         @ORM\Index(name="caller", columns={"caller"}),
+ *         @ORM\Index(name="type", columns={"type"}),
  *     }
  * )
- * @ORM\InheritanceType(value="SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap(value={"currentStep" = "CurrentStep", "historyStep"="HistoryStep"})
  */
-abstract class AbstractStep implements StepInterface
+class Step implements StepInterface
 {
     /**
      * @ORM\Id()
@@ -97,17 +95,43 @@ abstract class AbstractStep implements StepInterface
 
     /**
      *
-     * @ORM\ManyToMany(targetEntity="AbstractStep")
+     * @ORM\ManyToMany(targetEntity="Step")
      * @ORM\JoinTable(
      *     name="wf_previous_step",
      *     joinColumns={@ORM\JoinColumn(name="current_step_id", referencedColumnName="id")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="previous_step_id", referencedColumnName="id")}
      * )
      *
-     * @var ArrayCollection|AbstractStep[]
+     * @var ArrayCollection|StepInterface[]
      */
     protected $previousSteps;
 
+    /**
+     * Определяет тип шага
+     *
+     * @ORM\Column(name="type", type="string", length=15, nullable=false)
+     *
+     * @var string
+     */
+    protected $type;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AbstractEntry", inversedBy="steps")
+     * @ORM\JoinColumn(name="entry_id", referencedColumnName="id")
+     *
+     * @var EntryInterface
+     */
+    protected $entry;
+
+    /**
+     * Разрешенные типы шагов
+     *
+     * @var array
+     */
+    protected $accessType = [
+        self::CURRENT_STEP => self::CURRENT_STEP,
+        self::HISTORY_STEP => self::HISTORY_STEP,
+    ];
 
     /**
      *
@@ -299,11 +323,6 @@ abstract class AbstractStep implements StepInterface
     }
 
     /**
-     * @return EntryInterface
-     */
-    abstract public function getEntry();
-
-    /**
      * Возвращает id процесса
      *
      * @return integer
@@ -331,7 +350,7 @@ abstract class AbstractStep implements StepInterface
     }
 
     /**
-     * @return ArrayCollection|AbstractStep[]
+     * @return ArrayCollection|StepInterface[]
      */
     public function getPreviousSteps()
     {
@@ -339,7 +358,7 @@ abstract class AbstractStep implements StepInterface
     }
 
     /**
-     * @param ArrayCollection|AbstractStep[] $previousSteps
+     * @param ArrayCollection|StepInterface[] $previousSteps
      *
      * @return $this
      *
@@ -353,14 +372,68 @@ abstract class AbstractStep implements StepInterface
         }
 
         foreach ($previousSteps as $previousStep) {
-            if (!$previousStep instanceof AbstractStep) {
-                $errMsg = sprintf('step not implement %s', AbstractStep::class);
+            if (!$previousStep instanceof StepInterface) {
+                $errMsg = sprintf('step not implement %s', StepInterface::class);
                 throw new Exception\InvalidArgumentException($errMsg);
             }
             if (!$this->previousSteps->contains($previousStep)) {
                 $this->previousSteps->add($previousStep);
             }
         }
+        return $this;
+    }
+
+    /**
+     * Возвращает тип шага
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Устанавливает тип шага
+     *
+     * @param string $type
+     *
+     * @return $this
+     *
+     * @throws Exception\InvalidArgumentException
+     */
+    public function setType($type)
+    {
+        if (!array_key_exists($type, $this->accessType)) {
+            $errMsg = sprintf('Invalid step type %s', $type);
+            throw new Exception\InvalidArgumentException($errMsg);
+        }
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return EntryInterface
+     */
+    public function getEntry()
+    {
+        return $this->entry;
+    }
+
+    /**
+     * @param EntryInterface $entry
+     *
+     * @return $this
+     */
+    public function setEntry(EntryInterface $entry)
+    {
+        $this->entry = $entry;
+
+        if (!$entry->getSteps()->contains($this)) {
+            $entry->getSteps()->add($this);
+        }
+
         return $this;
     }
 }

@@ -38,7 +38,6 @@ abstract class AbstractEntry implements EntryInterface
      */
     protected $workflowName;
 
-
     /**
      * @ORM\Column(name="state", type="integer")
      *
@@ -48,29 +47,20 @@ abstract class AbstractEntry implements EntryInterface
     protected $state;
 
     /**
-     * @ORM\OneToMany(targetEntity="CurrentStep", mappedBy="entry")
+     * Шаги привязанные к процессу wf
      *
-     * @var CurrentStepInterface[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="Step", mappedBy="entry")
+     *
+     * @var StepInterface
      */
-    protected $currentSteps;
-
+    protected $steps;
 
     /**
-     * @ORM\OneToMany(targetEntity="HistoryStep", mappedBy="entry")
-     * @ORM\OrderBy({"finishDate"="ASC"})
-     *
-     * @var HistoryStepInterface[]|ArrayCollection
-     */
-    protected $historySteps;
-
-
-    /**
-     *
+     * AbstractEntry constructor.
      */
     public function __construct()
     {
-        $this->currentSteps = new ArrayCollection();
-        $this->historySteps = new ArrayCollection();
+        $this->steps = new ArrayCollection();
     }
 
     /**
@@ -143,50 +133,25 @@ abstract class AbstractEntry implements EntryInterface
         return $this->state > 0;
     }
 
+
     /**
-     * @return ArrayCollection|CurrentStepInterface[]
+     * @return ArrayCollection|StepInterface[]
      */
-    public function getCurrentSteps()
+    public function getSteps()
     {
-        return $this->currentSteps;
+        return $this->steps;
     }
 
     /**
-     * @param CurrentStepInterface $currentStep
+     * @param StepInterface $step
      *
      * @return $this
      */
-    public function addCurrentStep(CurrentStepInterface $currentStep)
+    public function addCurrentStep(StepInterface $step)
     {
-        $currentStep->setEntry($this);
-        if (!$this->getCurrentSteps()->contains($currentStep)) {
-            $this->getCurrentSteps()->add($currentStep);
-        }
-
-
-        return $this;
-    }
-
-
-
-    /**
-     * @return ArrayCollection|HistoryStepInterface[]
-     */
-    public function getHistorySteps()
-    {
-        return $this->historySteps;
-    }
-
-    /**
-     * @param HistoryStepInterface $historyStep
-     *
-     * @return $this
-     */
-    public function addHistoryStep(HistoryStepInterface $historyStep)
-    {
-        $historyStep->setEntry($this);
-        if (!$this->getHistorySteps()->contains($historyStep)) {
-            $this->getHistorySteps()->add($historyStep);
+        $step->setEntry($this);
+        if (!$this->getSteps()->contains($step)) {
+            $this->getSteps()->add($step);
         }
 
         return $this;

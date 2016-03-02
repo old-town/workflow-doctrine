@@ -5,7 +5,7 @@
  */
 namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Test\EntityRepository;
 
-use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep;
+use OldTown\Workflow\Spi\Doctrine\Entity\Step;
 use OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils\EntityManagerAwareTrait;
 use PHPUnit_Framework_TestCase as TestCase;
 use OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils\DirUtilTrait;
@@ -41,7 +41,7 @@ class StepRepositoryFunctionalTest extends TestCase implements EntityManagerAwar
     public function testFindByIdsEmptyInputData()
     {
         /** @var StepRepository $repo */
-        $repo = $this->getEntityManager()->getRepository(CurrentStep::class);
+        $repo = $this->getEntityManager()->getRepository(Step::class);
         static::assertEmpty($repo->findByIds([]));
     }
 
@@ -54,7 +54,7 @@ class StepRepositoryFunctionalTest extends TestCase implements EntityManagerAwar
     public function testFindByIdsInvalidResult()
     {
         /** @var StepRepository $repo */
-        $repo = $this->getEntityManager()->getRepository(CurrentStep::class);
+        $repo = $this->getEntityManager()->getRepository(Step::class);
         $repo->findByIds([-8]);
     }
 
@@ -65,14 +65,15 @@ class StepRepositoryFunctionalTest extends TestCase implements EntityManagerAwar
      */
     public function testFindByIds()
     {
-        $step = new CurrentStep();
+        $step = new Step();
         $step->setStartDate(new \DateTime());
         $step->setStepId(-7);
+        $step->setType(Step::CURRENT_STEP);
         $this->getEntityManager()->persist($step);
         $this->getEntityManager()->flush();
 
         /** @var StepRepository $repo */
-        $repo = $this->getEntityManager()->getRepository(CurrentStep::class);
+        $repo = $this->getEntityManager()->getRepository(Step::class);
         $actualStep = $repo->findByIds([$step->getId()]);
 
         static::assertEquals($step, current($actualStep));

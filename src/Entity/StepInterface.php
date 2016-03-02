@@ -18,6 +18,20 @@ use OldTown\Workflow\Spi\StepInterface as BaseStepInterface;
 interface StepInterface extends BaseStepInterface
 {
     /**
+     * Текущий шаг
+     *
+     * @var string
+     */
+    const CURRENT_STEP = 'current';
+
+    /**
+     * Шаг из истории
+     *
+     * @var string
+     */
+    const HISTORY_STEP = 'history';
+
+    /**
      * @param string $id
      *
      * @return $this
@@ -78,16 +92,31 @@ interface StepInterface extends BaseStepInterface
     public function getPreviousStepIds();
 
     /**
-     * @return ArrayCollection|AbstractStep[]
+     * @return ArrayCollection|StepInterface[]
      */
     public function getPreviousSteps();
 
     /**
-     * @param ArrayCollection|AbstractStep[] $previousSteps
+     * @param ArrayCollection|StepInterface[] $previousSteps
      *
      * @return $this
      *
      * @throws Exception\InvalidArgumentException
      */
     public function setPreviousSteps($previousSteps);
+
+    /**
+     * Возвращает тип шиага: current или history
+     *
+     * @return string
+     */
+    public function getType();
+
+    /**
+     * Устанавливает тип шиага: current или history
+     *
+     * @param string $type
+     * @return $this
+     */
+    public function setType($type);
 }

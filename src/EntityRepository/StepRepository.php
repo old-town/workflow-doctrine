@@ -6,7 +6,8 @@
 namespace OldTown\Workflow\Spi\Doctrine\EntityRepository;
 
 use Doctrine\ORM\EntityRepository;
-use \OldTown\Workflow\Spi\Doctrine\Entity\AbstractStep;
+use OldTown\Workflow\Spi\Doctrine\Entity\StepInterface;
+use OldTown\Workflow\Spi\Doctrine\Entity\EntryInterface;
 
 class StepRepository extends EntityRepository
 {
@@ -32,7 +33,7 @@ class StepRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameter('stepIds', $listId);
 
-        /** @var AbstractStep[] $steps */
+        /** @var StepInterface[] $steps */
         $steps = $query->getResult();
 
         if ($countListId !== count($steps)) {
@@ -41,5 +42,62 @@ class StepRepository extends EntityRepository
         }
 
         return $steps;
+    }
+
+    /**
+     * Поиск текущих шагов
+     *
+     * @param EntryInterface $entry
+     *
+     * @return array
+     */
+    public function findCurrentSteps(EntryInterface $entry)
+    {
+        $dql = "
+          SELECT
+            step
+          FROM {$this->_entityName} step
+          JOIN step.entry entry
+          WHERE
+              entry.id = :entryId
+                AND
+              step.type = :stepType
+          ";
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('entryId', $entry->getId());
+        $query->setParameter('stepType', StepInterface::CURRENT_STEP);
+
+        /** @var StepInterface[] $steps */
+        return $query->getResult();
+    }
+
+    /**
+     * Поиск шагов в истории
+     *
+     * @param EntryInterface $entry
+     *
+     * @return array
+     */
+    public function findHistorySteps(EntryInterface $entry)
+    {
+        $dql = "
+          SELECT
+            step
+          FROM {$this->_entityName} step
+          JOIN step.entry entry
+          WHERE
+              entry.id = :entryId
+                AND
+              step.type = :stepType
+          ORDER BY step.finishDate ASC
+          ";
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('entryId', $entry->getId());
+        $query->setParameter('stepType', StepInterface::HISTORY_STEP);
+
+        /** @var StepInterface[] $steps */
+        return $query->getResult();
     }
 }

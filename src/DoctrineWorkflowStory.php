@@ -7,7 +7,6 @@ namespace OldTown\Workflow\Spi\Doctrine;
 
 use DateTime;
 use OldTown\PropertySet\PropertySetManager;
-use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStep;
 use ReflectionClass;
 use OldTown\Workflow\Query\WorkflowExpressionQuery;
 use OldTown\Workflow\Spi\StepInterface;
@@ -16,13 +15,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use OldTown\Workflow\Spi\Doctrine\EntityManagerFactory\EntityManagerFactoryInterface;
 use OldTown\Workflow\Spi\WorkflowEntryInterface;
 use OldTown\Workflow\Spi\Doctrine\Entity\DefaultEntry;
-use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep;
 use OldTown\Workflow\Spi\Doctrine\EntityRepository\StepRepository;
 use OldTown\Workflow\Spi\Doctrine\Entity\EntryInterface;
-use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStepInterface;
-use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStepInterface;
 use SplObjectStorage;
-use OldTown\Workflow\Spi\Doctrine\Entity\AbstractStep;
+use OldTown\Workflow\Spi\Doctrine\Entity\Step;
+use OldTown\Workflow\Spi\Doctrine\Entity\StepInterface as BaseStepInterface;
+
+
 
 /**
  * Class DoctrineWorkflowStory
@@ -77,8 +76,7 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
      */
     protected $entityMap = [
         'entry'       => DefaultEntry::class,
-        'currentStep' => CurrentStep::class,
-        'historyStep' => HistoryStep::class,
+        'step' => Step::class,
 
     ];
 
@@ -246,10 +244,10 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
         /** @var EntryInterface $entry */
         $entry = $em->getRepository($entryClassName)->find($entryId);
 
-        $currentStepClassName = $this->getEntityClassName('currentStep');
+        $currentStepClassName = $this->getEntityClassName('step');
         $r = new ReflectionClass($currentStepClassName);
 
-        /** @var CurrentStepInterface $currentStep */
+        /** @var BaseStepInterface $currentStep */
         $currentStep = $r->newInstance($currentStepClassName);
         $currentStep->setEntry($entry);
         $currentStep->setStepId($stepId);
@@ -257,10 +255,11 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
         $currentStep->setStartDate($startDate);
         $currentStep->setDueDate($dueDate);
         $currentStep->setStatus($status);
+        $currentStep->setType(BaseStepInterface::CURRENT_STEP);
 
         if (count($previousIds) > 0) {
             /** @var StepRepository $previousStepRepository */
-            $previousStepRepository = $em->getRepository(AbstractStep::class);
+            $previousStepRepository = $em->getRepository(Step::class);
             $previousSteps = $previousStepRepository->findByIds($previousIds);
             $currentStep->setPreviousSteps($previousSteps);
         }
@@ -273,7 +272,7 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
     /**
      * @param int $entryId
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection|Entity\CurrentStepInterface[]
+     * @return \Doctrine\Common\Collections\ArrayCollection|Entity\StepInterface[]
      *
      * @return StepInterface[]
      *
@@ -289,7 +288,11 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
         /** @var EntryInterface $entry */
         $entry = $em->getRepository($entryClassName)->find($entryId);
 
-        $currentSteps = $entry->getCurrentSteps();
+        $stepClassName = $this->getEntityClassName('step');
+        /** @var StepRepository $stepRepo */
+        $stepRepo = $em->getRepository($stepClassName);
+
+        $currentSteps = $stepRepo->findCurrentSteps($entry);
         $result = new SplObjectStorage();
         foreach ($currentSteps as $currentStep) {
             $result->attach($currentStep);
@@ -358,24 +361,13 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
      */
     public function moveToHistory(StepInterface $step)
     {
-        if (!$step instanceof CurrentStepInterface) {
-            $errMsg = sprintf('Step not implement %s', CurrentStepInterface::class);
+        if (!$step instanceof BaseStepInterface) {
+            $errMsg = sprintf('Step not implement %s', BaseStepInterface::class);
             throw new Exception\InvalidArgumentException($errMsg);
         }
-        $entry = $step->getEntry();
-
-        $entry->getCurrentSteps()->removeElement($step);
-
-        $historyStepClassName = $this->getEntityClassName('historyStep');
-
-        $r = new ReflectionClass($historyStepClassName);
-        /** @var HistoryStepInterface $historyStep */
-        $historyStep = $r->newInstance($step);
-        $entry->addHistoryStep($historyStep);
-
         $em = $this->getEntityManager();
-        $em->persist($historyStep);
-        $em->remove($step);
+        $step->setType(BaseStepInterface::HISTORY_STEP);
+
         $em->flush();
     }
 
@@ -398,7 +390,17 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
         /** @var EntryInterface $entry */
         $entry = $em->getRepository($entryClassName)->find($entryId);
 
-        return $entry->getHistorySteps();
+        $stepClassName = $this->getEntityClassName('step');
+        /** @var StepRepository $stepRepo */
+        $stepRepo = $em->getRepository($stepClassName);
+
+        $historySteps = $stepRepo->findHistorySteps($entry);
+        $result = new SplObjectStorage();
+        foreach ($historySteps as $currentStep) {
+            $result->attach($currentStep);
+        }
+
+        return $result;
     }
 
     /**

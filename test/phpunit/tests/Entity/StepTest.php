@@ -6,23 +6,22 @@
 namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Test\Entity;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use OldTown\Workflow\Spi\Doctrine\Entity\AbstractStep;
+use OldTown\Workflow\Spi\Doctrine\Entity\Step;
 use OldTown\Workflow\Spi\Doctrine\Entity\DefaultEntry;
 
 /**
- * Class AbstractStepTest
+ * Class StepTest
  *
  * @package OldTown\Workflow\Spi\Doctrine\PhpUnit\Test\Entity
  */
-class AbstractStepTest extends TestCase
+class StepTest extends TestCase
 {
     /**
      * Проверка установки/получения id
      */
     public function testSetterGetterId()
     {
-        /** @var AbstractStep $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class);
+        $step = new Step();
         $expectedId = -7;
         static::assertEquals($step, $step->setId($expectedId));
         static::assertEquals($expectedId, $step->getId());
@@ -33,8 +32,7 @@ class AbstractStepTest extends TestCase
      */
     public function testSetterGetterActionId()
     {
-        /** @var AbstractStep $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class);
+        $step = new Step();
         $expectedActionId = -7;
         static::assertEquals($step, $step->setActionId($expectedActionId));
         static::assertEquals($expectedActionId, $step->getActionId());
@@ -45,8 +43,7 @@ class AbstractStepTest extends TestCase
      */
     public function testSetterGetterCaller()
     {
-        /** @var AbstractStep $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class);
+        $step = new Step();
         $expected = 'test_caller';
         static::assertEquals($step, $step->setCaller($expected));
         static::assertEquals($expected, $step->getCaller());
@@ -57,8 +54,7 @@ class AbstractStepTest extends TestCase
      */
     public function testSetterGetterFinishDate()
     {
-        /** @var AbstractStep $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class);
+        $step = new Step();
         $expected = new \DateTime();
         static::assertEquals($step, $step->setFinishDate($expected));
         static::assertEquals($expected, $step->getFinishDate());
@@ -70,8 +66,7 @@ class AbstractStepTest extends TestCase
      */
     public function testSetterGetterStartDate()
     {
-        /** @var AbstractStep $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class);
+        $step = new Step();
         $expected = new \DateTime();
         static::assertEquals($step, $step->setStartDate($expected));
         static::assertEquals($expected, $step->getStartDate());
@@ -83,8 +78,7 @@ class AbstractStepTest extends TestCase
      */
     public function testSetterGetterDueDate()
     {
-        /** @var AbstractStep $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class);
+        $step = new Step();
         $expected = new \DateTime();
         static::assertEquals($step, $step->setDueDate($expected));
         static::assertEquals($expected, $step->getDueDate());
@@ -96,8 +90,7 @@ class AbstractStepTest extends TestCase
      */
     public function testSetterGetterOwner()
     {
-        /** @var AbstractStep $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class);
+        $step = new Step();
         $expected = 'test_owner';
         static::assertEquals($step, $step->setOwner($expected));
         static::assertEquals($expected, $step->getOwner());
@@ -108,8 +101,7 @@ class AbstractStepTest extends TestCase
      */
     public function testSetterGetterStatus()
     {
-        /** @var AbstractStep $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class);
+        $step = new Step();
         $expected = 'test_status';
         static::assertEquals($step, $step->setStatus($expected));
         static::assertEquals($expected, $step->getStatus());
@@ -121,8 +113,7 @@ class AbstractStepTest extends TestCase
      */
     public function testSetterGetterStepId()
     {
-        /** @var AbstractStep $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class);
+        $step = new Step();
         $expected = '-7';
         static::assertEquals($step, $step->setStepId($expected));
         static::assertEquals($expected, $step->getStepId());
@@ -134,8 +125,8 @@ class AbstractStepTest extends TestCase
      */
     public function testGetEntryId()
     {
-        /** @var AbstractStep|\PHPUnit_Framework_MockObject_MockObject $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class, ['getEntry']);
+        /** @var Step|\PHPUnit_Framework_MockObject_MockObject $step */
+        $step = $this->getMock(Step::class, ['getEntry']);
 
         $expected = -7;
 
@@ -155,8 +146,7 @@ class AbstractStepTest extends TestCase
      */
     public function testSetPreviousStepsInvalidCollections()
     {
-        /** @var AbstractStep|\PHPUnit_Framework_MockObject_MockObject $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class);
+        $step = new Step();
 
 
         /** @noinspection PhpParamsInspection */
@@ -168,12 +158,11 @@ class AbstractStepTest extends TestCase
      * Попытка установить предыдущие шаги. Массив содержит, данные не являющиеся шагом
      *
      * @expectedException \OldTown\Workflow\Spi\Doctrine\Entity\Exception\InvalidArgumentException
-     * @expectedExceptionMessage step not implement OldTown\Workflow\Spi\Doctrine\Entity\AbstractStep
+     * @expectedExceptionMessage step not implement OldTown\Workflow\Spi\Doctrine\Entity\StepInterface
      */
     public function testSetPreviousStepsInvalidStep()
     {
-        /** @var AbstractStep|\PHPUnit_Framework_MockObject_MockObject $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class);
+        $step = new Step();
 
         $step->setPreviousSteps([7]);
     }
@@ -185,13 +174,9 @@ class AbstractStepTest extends TestCase
      */
     public function testSetPreviousSteps()
     {
+        $pStep1 = new Step();
 
-        /** @var AbstractStep|\PHPUnit_Framework_MockObject_MockObject $pStep1 */
-        $pStep1 = $this->getMockForAbstractClass(AbstractStep::class);
-
-
-        /** @var AbstractStep|\PHPUnit_Framework_MockObject_MockObject $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class);
+        $step = new Step();
         $step->setPreviousSteps([$pStep1, $pStep1, $pStep1, $pStep1]);
 
         static::assertCount(1, $step->getPreviousSteps());
@@ -205,21 +190,16 @@ class AbstractStepTest extends TestCase
      */
     public function testGetPreviousStepIds()
     {
-
-        /** @var AbstractStep|\PHPUnit_Framework_MockObject_MockObject $pStep1 */
-        $pStep1 = $this->getMockForAbstractClass(AbstractStep::class);
+        $pStep1 =new Step();
         $pStep1->setId(-7);
 
-        /** @var AbstractStep|\PHPUnit_Framework_MockObject_MockObject $pStep2 */
-        $pStep2 = $this->getMockForAbstractClass(AbstractStep::class);
+        $pStep2 = new Step();
         $pStep2->setId(-8);
 
-        /** @var AbstractStep|\PHPUnit_Framework_MockObject_MockObject $pStep3 */
-        $pStep3 = $this->getMockForAbstractClass(AbstractStep::class);
+        $pStep3 = new Step();
         $pStep3->setId(-9);
 
-        /** @var AbstractStep|\PHPUnit_Framework_MockObject_MockObject $step */
-        $step = $this->getMockForAbstractClass(AbstractStep::class);
+        $step = new Step();
         $step->setPreviousSteps([$pStep1, $pStep2, $pStep3]);
 
         static::assertEmpty(array_diff([-7, -8, -9], $step->getPreviousStepIds()));

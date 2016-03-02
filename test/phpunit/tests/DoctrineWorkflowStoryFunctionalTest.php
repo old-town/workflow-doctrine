@@ -6,7 +6,7 @@
 namespace OldTown\Workflow\Spi\Doctrine\PhpUnit\Test;
 
 use OldTown\Workflow\Query\WorkflowExpressionQuery;
-use OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep;
+use OldTown\Workflow\Spi\Doctrine\Entity\Step;
 use OldTown\Workflow\Spi\Doctrine\Entity\EntryInterface;
 use OldTown\Workflow\Spi\Doctrine\EntityManagerFactory\SimpleEntityManagerFactory;
 use OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils\EntityManagerAwareTrait;
@@ -19,7 +19,6 @@ use OldTown\Workflow\Spi\Doctrine\PhpUnit\Utils\DbTrait;
 use OldTown\Workflow\Spi\Doctrine\DoctrineWorkflowStory;
 use OldTown\Workflow\Spi\Doctrine\Entity\DefaultEntry;
 use DateTime;
-use OldTown\Workflow\Spi\Doctrine\Entity\HistoryStep;
 use OldTown\Workflow\Spi\Doctrine\EntityRepository\StepRepository;
 
 /**
@@ -145,8 +144,8 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         $em = $this->getEntityManager();
         $em->clear();
 
-        /** @var CurrentStep  $step */
-        $step = $em->getRepository(CurrentStep::class)->find($id);
+        /** @var Step  $step */
+        $step = $em->getRepository(Step::class)->find($id);
 
         static::assertEquals($stepId, $step->getStepId());
         static::assertEquals($owner, $step->getOwner());
@@ -239,8 +238,8 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         $status = 'finish';
         $id = $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $status);
 
-        /** @var CurrentStep $step */
-        $step = $this->doctrineWorkflowStory->getEntityManager()->getRepository(CurrentStep::class)->find($id);
+        /** @var Step $step */
+        $step = $this->doctrineWorkflowStory->getEntityManager()->getRepository(Step::class)->find($id);
 
         $actionId = -7;
         $finishDate = new DateTime();
@@ -250,8 +249,8 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
 
 
         $this->doctrineWorkflowStory->getEntityManager()->clear();
-        /** @var CurrentStep $step */
-        $step = $this->doctrineWorkflowStory->getEntityManager()->getRepository(CurrentStep::class)->find($id);
+        /** @var Step $step */
+        $step = $this->doctrineWorkflowStory->getEntityManager()->getRepository(Step::class)->find($id);
 
         static::assertEquals($actionId, $step->getActionId());
         static::assertEquals($finishDate, $step->getFinishDate());
@@ -297,34 +296,20 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         $id = $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $statusForHistoryStep, $previousIds);
 
         $em = $this->getEntityManager();
-        /** @var CurrentStep  $step */
-        $step = $em->getRepository(CurrentStep::class)->find($id);
+        /** @var Step  $step */
+        $step = $em->getRepository(Step::class)->find($id);
 
         $this->doctrineWorkflowStory->moveToHistory($step);
 
         $em->clear();
 
-        /** @var  HistoryStep $historyStep */
-        $historyStep  = $em->getRepository(HistoryStep::class)->findOneBy(['status' => $statusForHistoryStep]);
-        static::assertInstanceOf(HistoryStep::class, $historyStep);
+        /** @var  Step $historyStep */
+        $historyStep  = $em->getRepository(Step::class)->findOneBy(['status' => $statusForHistoryStep]);
+        static::assertInstanceOf(Step::class, $historyStep);
 
 
         static::assertEmpty(array_diff($previousIds, $historyStep->getPreviousStepIds()));
         static::assertCount(count($previousIds), $historyStep->getPreviousStepIds());
-    }
-
-    /**
-     * Перенос шага в архив. Попытка передать historyStep в качестве аргумента
-     *
-     * @expectedException \OldTown\Workflow\Spi\Doctrine\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Step not implement OldTown\Workflow\Spi\Doctrine\Entity\CurrentStep
-     */
-    public function testMoveToHistoryInvalidStep()
-    {
-        /** @var HistoryStep  $historyStep */
-        $historyStep = $this->getMock(HistoryStep::class, [], [], '', false);
-
-        $this->doctrineWorkflowStory->moveToHistory($historyStep);
     }
 
     /**
@@ -336,7 +321,7 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
     {
         $em = $this->doctrineWorkflowStory->getEntityManager();
         /** @var StepRepository  $currentStepRep */
-        $currentStepRep = $em->getRepository(CurrentStep::class);
+        $currentStepRep = $em->getRepository(Step::class);
 
         $entry = $this->doctrineWorkflowStory->createEntry('test_workflow_name');
 
@@ -347,7 +332,7 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         $dueDate = new DateTime();
         $status = 'finish';
         $id = $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $status);
-        /** @var CurrentStep $step1 */
+        /** @var Step $step1 */
         $step1 = $currentStepRep->find($id);
         $finishDateStep1 = new DateTime('2005-01-01');
         $this->doctrineWorkflowStory->markFinished($step1, 7, $finishDateStep1, 'test', 'test');
@@ -360,7 +345,7 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         $dueDate = new DateTime();
         $status = 'finish';
         $id = $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $status);
-        /** @var CurrentStep $step2 */
+        /** @var Step $step2 */
         $step2 = $currentStepRep->find($id);
         $finishDateStep2 = new DateTime('2003-01-01');
         $this->doctrineWorkflowStory->markFinished($step2, 7, $finishDateStep2, 'test', 'test');
@@ -373,7 +358,7 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         $dueDate = new DateTime();
         $status = 'finish';
         $id = $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $status);
-        /** @var CurrentStep $step3 */
+        /** @var Step $step3 */
         $step3 = $currentStepRep->find($id);
         $finishDateStep3 = new DateTime('2004-01-01');
         $this->doctrineWorkflowStory->markFinished($step3, 7, $finishDateStep3, 'test', 'test');
@@ -388,11 +373,12 @@ class DoctrineWorkflowStoryFunctionalTest extends TestCase implements EntityMana
         $this->doctrineWorkflowStory->createCurrentStep($entry->getId(), $stepId, $owner, $startDate, $dueDate, $status);
 
         $em->clear();
-        /** @var HistoryStep[]|\Iterator $historySteps */
+        /** @var StepInterface[]|\Iterator $historySteps */
         $historySteps = $this->doctrineWorkflowStory->findHistorySteps($entry->getId());
 
         static::assertCount(3, $historySteps);
 
+        $historySteps->rewind();
         static::assertEquals($step2->getStepId(), $historySteps->current()->getStepId());
         $historySteps->next();
         static::assertEquals($step3->getStepId(), $historySteps->current()->getStepId());
