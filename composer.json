@@ -29,9 +29,9 @@
   ],
   "require": {
     "php": ">=5.5",
-    "old-town/workflow": "dev-dev",
+    "old-town/workflow": "^0.1",
     "doctrine/orm": "~2.5.0",
-    "old-town/propertyset": "dev-dev"
+    "old-town/propertyset": "^0.1"
   },
   "require-dev": {
     "ext-mbstring": "*",
