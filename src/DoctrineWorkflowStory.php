@@ -274,7 +274,7 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
      *
      * @return \Doctrine\Common\Collections\ArrayCollection|Entity\StepInterface[]
      *
-     * @return StepInterface[]
+     * @return StepInterface[]|SplObjectStorage
      *
      * @throws Exception\DoctrineRuntimeException
      * @throws Exception\InvalidArgumentException
