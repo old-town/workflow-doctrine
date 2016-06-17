@@ -112,7 +112,7 @@ class Step implements StepInterface
      * @ORM\Version()
      * @ORM\Column(name="version", type="integer")
      *
-     * @var
+     * @var integer
      */
     protected $version;
 
