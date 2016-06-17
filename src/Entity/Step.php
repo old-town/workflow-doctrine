@@ -107,6 +107,16 @@ class Step implements StepInterface
     protected $previousSteps;
 
     /**
+     * Поле для оптимистичных блокировок
+     *
+     * @ORM\Version()
+     * @ORM\Column(name="version", type="integer")
+     *
+     * @var
+     */
+    protected $version;
+
+    /**
      * Определяет тип шага
      *
      * @ORM\Column(name="type", type="string", length=15, nullable=false)
