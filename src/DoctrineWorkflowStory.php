@@ -264,7 +264,15 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
             $currentStep->setPreviousSteps($previousSteps);
         }
         $em->persist($currentStep);
-        $em->flush();
+        /**
+         * Причина передачи шага в flush описана в markFinished  (
+         *
+         * @see \OldTown\Workflow\Spi\Doctrine\DoctrineWorkflowStory::markFinished
+         *
+         * )
+         */
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        $em->flush($currentStep);
 
         return $currentStep->getId();
     }
