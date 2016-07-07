@@ -342,7 +342,17 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
         $em = $this->getEntityManager();
 
         $em->persist($step);
-        $em->flush();
+        /**
+         * Декларация метода flush (@see \Doctrine\Common\Persistence\ObjectManager::flush), не подрузомевает передачу,
+         * сущности (или документа для odm). Но существующие реализации ObjectManager'ов (
+         * \Doctrine\ORM\EntityManager и Doctrine\ODM\MongoDB\DocumentManager) позволяют передать в качестве первого
+         * аргумента сущность или документ, хоторые необходимо сохранить. Поэтому для оптимизации производительности,
+         * сохраняем в персистентоном хранилище изменения касающиеся конкретного шага.
+         *
+         *
+         */
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        $em->flush($step);
 
         return $step;
     }
@@ -368,7 +378,15 @@ class DoctrineWorkflowStory implements WorkflowStoreInterface
         $em = $this->getEntityManager();
         $step->setType(BaseStepInterface::HISTORY_STEP);
 
-        $em->flush();
+        /**
+         * Причина передачи шага в flush описана в markFinished  (
+         *
+         * @see \OldTown\Workflow\Spi\Doctrine\DoctrineWorkflowStory::markFinished
+         *
+         * )
+         */
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        $em->flush($step);
     }
 
     /**
